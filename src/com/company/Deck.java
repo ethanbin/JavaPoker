@@ -13,7 +13,7 @@ public class Deck {
     private static final int CARDS_PER_DECK   = 52;
     private static final int NUMBER_OF_SUITES = 4;
 
-    Stack<Card> cards;
+    private Stack<Card> cards;
 
     public void fillDeckAndShuffle(){
         cards = new Stack<>();
