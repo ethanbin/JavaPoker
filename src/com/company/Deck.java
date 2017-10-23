@@ -8,42 +8,44 @@ import java.util.Stack;
 /**
  * Created by Ethan on 9/27/2017.
  */
-public class Deck extends Card{
+public class Deck {
 
-	Deck(Suite suite, int value) {
-		super(suite, value);
-		// TODO Auto-generated constructor stub
-	}
+    Deck(){
+        init();
+    }
 
-    private static final int CARDS_PER_SUITE  = 13;
+    private static final int CARDS_PER_SUITE = 13;
     private static final int NUMBER_OF_SUITES = 4;
 
-    Stack<Card> cards;
-    Stack<Card> usedCards;
+    private Stack<Card> cards;
+    private Stack<Card> usedCards;
 
-    public void init(){		//this is essentially the initializer since we only need the deck to be created once
+    private void init() {        //this is essentially the initializer since we only need the deck to be created once
         cards = new Stack<>();
-        for (int i = 0; i < NUMBER_OF_SUITES; i++){
-            for (int j = 2; j < CARDS_PER_SUITE + 2; j++){
+        for (int i = 0; i < NUMBER_OF_SUITES; i++) {
+            for (int j = 2; j < CARDS_PER_SUITE + 2; j++) {
                 cards.push(new Card(Card.Suite.values()[i], j));
             }
         }
     }
-    
+
     public void shuffle() {
-    	Card ret;	//the card being returned
-    	
-    	while(!usedCards.isEmpty()) {
-    		ret = usedCards.pop();
-    		cards.push(ret);
-    	}
-    	
+        // restoring used cards back to the deck
+        while (!usedCards.isEmpty())
+            cards.push(usedCards.pop());
+
         Collections.shuffle(cards);
     }
 
-    public Card dealOneCard(){	// we would have to call this twice when dealing
-    	Card deal = cards.pop();	// what is dealt should have its own stack so we don't have to fillDeck every round
-    	usedCards.push(deal);
-    	return deal;    	
+    public Card dealOneCard() {    // we would have to call this twice when dealing
+        Card deal = cards.pop();    // what is dealt should have its own stack so we don't have to fillDeck every round
+        usedCards.push(deal);
+        return deal;
+    }
+
+    public static void main(String[] args) {
+        Deck deck = new Deck();
+        deck.init();
+        System.out.printf("ok");
     }
 }
