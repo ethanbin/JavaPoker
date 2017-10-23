@@ -9,24 +9,28 @@ import java.util.List;
 public class Table {
     enum Stage {
         // each number value represents number of cards the table should have
-        PREFLOP(0), FLOP(3), TURN(4), RIVER(5);
+        PRE_FLOP(0), FLOP(3), TURN(4), RIVER(5);
 
         private int numberOfCardsToDeal;
 
         // needed for giving each stage a number value
-        Stage(int numberOfCardsToDeal) { this.numberOfCardsToDeal = numberOfCardsToDeal; }
+        Stage(int numberOfCardsToDeal) {
+            this.numberOfCardsToDeal = numberOfCardsToDeal;
+        }
 
         // Returns number of cards that should be on the table this round
-        public int getNumberOfCardsNeeded(){ return numberOfCardsToDeal; }
+        public int getNumberOfCardsToDeal() {
+            return numberOfCardsToDeal;
+        }
 
         // Save an array of every Stage value so getNextStage won't need to keep calling values().
-        private static final Stage [] stageValues = values();
-        public Stage getNextStage(){
-            return stageValues[(this.ordinal()+1) % 4];
-        };
-    }
+        private static final Stage[] stageValues = values();
 
-    private Stage stage = Stage.PREFLOP;
+        @Override
+        public String toString() {
+            return "Stage " + this.name() + " needs " + getNumberOfCardsToDeal() + " cards dealt to table.\n";
+        }
+    }
 
     // turn represents which entity's turn it is to act, with 0 being the table's
     private int turn = 0;
@@ -39,18 +43,12 @@ public class Table {
 
     private Deck deck = new Deck();
 
-    void dealToTable(){
-        while (communityCards.size() < stage.getNumberOfCardsNeeded()){
-            communityCards.add(deck.deal());
-        }
-    }
-
     // currently used for testing
-    public static void main(String [ ] args){
-        Table table = new Table();
-        for (int i = 0; i < 4; i++) {
-            System.out.println(table.stage.toString());
-            table.stage = table.stage.getNextStage();
+    public static void main(String[] args) {
+
+        for (Stage stage : Stage.values()) {
+            System.out.print(stage.toString());
         }
+
     }
 }
