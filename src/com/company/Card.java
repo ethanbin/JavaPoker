@@ -6,24 +6,20 @@ import java.util.*;
  * Created by Ethan on 9/27/2017.
  */
 public class Card {
-    // values set up by lowest to highest value
-    enum Suits {
-        DIAMONDS, CLUBS, HEARTS, SPADES
-    }
 
-    private Suits suits;
+    private int suit;
     private int value;
 
-    public Suits getSuits(){
-        return suits;
+    public int getSuit(){
+        return suit;
     }
 
-    public int returnValue(){
+    public int getValueValue(){
         return value;
     }
 
-    Card(Suits suits, int value){
-        this.suits = suits;
+    Card(int suit, int value){
+        this.suit = suit;
         this.value = value;
     }
 }
