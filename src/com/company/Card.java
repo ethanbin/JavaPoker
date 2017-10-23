@@ -7,23 +7,23 @@ import java.util.*;
  */
 public class Card {
     // values set up by lowest to highest value
-    enum Suite {
+    enum Suits {
         DIAMONDS, CLUBS, HEARTS, SPADES
     }
 
-    private Suite suite;
+    private Suits suits;
     private int value;
 
-    public Suite getSuite(){
-        return suite;
+    public Suits getSuits(){
+        return suits;
     }
 
     public int returnValue(){
         return value;
     }
 
-    Card(Suite suite, int value){
-        this.suite = suite;
+    Card(Suits suits, int value){
+        this.suits = suits;
         this.value = value;
     }
 }

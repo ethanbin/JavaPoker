@@ -10,8 +10,8 @@ import java.util.Stack;
  */
 public class Deck extends Card{
 
-	Deck(Suite suite, int value) {
-		super(suite, value);
+	Deck(Suits suits, int value) {
+		super(suits, value);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -25,7 +25,7 @@ public class Deck extends Card{
         cards = new Stack<>();
         for (int i = 0; i < NUMBER_OF_SUITES; i++){
             for (int j = 2; j < CARDS_PER_SUITE + 2; j++){
-                cards.push(new Card(Card.Suite.values()[i], j));
+                cards.push(new Card(Suits.values()[i], j));
             }
         }
     }
