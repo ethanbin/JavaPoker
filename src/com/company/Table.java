@@ -35,7 +35,6 @@ public class Table {
         @Override
         public String toString() {
             return "Stage " + this.name() + " needs " + getNumberOfCardsToDeal() + " cards dealt to table.\n";
-
         }
     }
 
