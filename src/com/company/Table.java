@@ -32,6 +32,8 @@ public class Table {
         }
     }
 
+    private Stage stage;
+
     // turn represents which entity's turn it is to act, with 0 being the table's
     private int turn = 0;
 
@@ -42,6 +44,16 @@ public class Table {
     private List<Card> communityCards = new ArrayList<>();
 
     private Deck deck = new Deck();
+
+    public Table(){
+        stage = Stage.PRE_FLOP;
+    }
+
+    void dealToTable(){
+        while (communityCards.size() < stage.getNumberOfCardsToDeal()){
+            communityCards.add(deck.dealCard());
+        }
+    }
 
     // currently used for testing
     public static void main(String[] args) {
