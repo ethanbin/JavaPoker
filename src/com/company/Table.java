@@ -7,10 +7,6 @@ import java.util.List;
  * Created by Ethan on 10/17/2017.
  */
 public class Table {
-
-    /******************************************************************************************************************
-     ***************************************            Variables               ***************************************
-     *****************************************************************************************************************/
     enum Stage {
         // each number value represents number of cards the table should have
         PRE_FLOP(0), FLOP(3), TURN(4), RIVER(5);
@@ -34,7 +30,7 @@ public class Table {
 
         @Override
         public String toString() {
-            return "Stage " + this.name() + " needs " + getNumberOfCardsToDeal() + " cards dealt to table.\n";
+            return "Stage " + this.name() + " needs " + getNumberOfCardsToDeal() + " cards on the table.\n";
         }
     }
 
@@ -105,7 +101,7 @@ public class Table {
             // Maybe make static int in Player class called tableTurnID = 0 and use that instead?
             while (getTurn() != 0) ;
         }
-        // TODO: call a method here to figure out who won.
+        // TODO:    call a method here to figure out who won.
         // calculateWinner();
         roundInProgress = false;
     }
