@@ -13,26 +13,30 @@ public class Table {
      *****************************************************************************************************************/
     enum Stage {
         // each number value represents number of cards the table should have
-        PREFLOP(0), FLOP(3), TURN(4), RIVER(5);
+        PRE_FLOP(0), FLOP(3), TURN(4), RIVER(5);
 
         private int numberOfCardsToDeal;
 
         // needed for giving each stage a number value
-        Stage(int numberOfCardsToDeal) { this.numberOfCardsToDeal = numberOfCardsToDeal; }
+        Stage(int numberOfCardsToDeal) {
+            this.numberOfCardsToDeal = numberOfCardsToDeal;
+        }
 
         // Returns number of cards that should be on the table this round
-        public int getNumberOfCardsNeeded(){ return numberOfCardsToDeal; }
+        public int getNumberOfCardsToDeal() {
+            return numberOfCardsToDeal;
+        }
 
         // Save an array of every Stage value so getNextStage won't need to keep calling values().
-        private static final Stage [] stageValues = values();
-        public Stage getNextStage(){
-            return stageValues[(this.ordinal()+1) % 4];
-        };
+        private static final Stage[] stageValues = values();
 
         public static final int size = stageValues.length;
-    }
 
-    private Stage stage = Stage.PREFLOP;
+        @Override
+        public String toString() {
+            return "Stage " + this.name() + " needs " + getNumberOfCardsToDeal() + " cards dealt to table.\n";
+        }
+    }
 
     // turn represents which entity's turn it is to act, with 0 being the table's
     private int turn = 0;
@@ -49,10 +53,8 @@ public class Table {
 
     private Deck deck = new Deck();
 
-    private List<Player> players= new ArrayList<>();
-    /******************************************************************************************************************
-     ***************************************              Methods               ***************************************
-     *****************************************************************************************************************/
+    private List<Player> players = new ArrayList<>();
+
     // TODO: uncomment when the User class is made
 //    public void nextTurn(){
 //        do {
@@ -60,10 +62,15 @@ public class Table {
 //        } while (userList.get(i).didUserFold());
 //    }
     // to use for testing until above function can be used
-    public void nextTurn() { turn+= (turn+1) % 2; }
+    public void nextTurn() {
+        turn += (turn + 1) % 2;
+    }
+
     int mainTurnID = 1; //to be used for debugging
 
-    public int getTurn(){ return turn; }
+    public int getTurn() {
+        return turn;
+    }
 
     // TODO: add method to add users and start them in their own thread.
 //    public boolean addUser(){
@@ -71,7 +78,7 @@ public class Table {
 //            return false;
 //    }
 
-    private void startNewRound(){
+    private void startNewRound() {
         pot = 0;
         communityCards = new ArrayList<>();
         roundInProgress = true;
@@ -80,7 +87,7 @@ public class Table {
     }
 
     // first table acts, then players play
-    private void playRound(){
+    private void playRound() {
         // TODO:    add condition to loop checking that playing users > 1, maybe with static function in User class.
         // This loop will go through each user's turn and dealing cards.
         for (int i = 0; i < Stage.size; i++) {
@@ -100,26 +107,24 @@ public class Table {
             }
             // 0 represents table's turn.
             // Maybe make static int in Player class called tableTurnID = 0 and use that instead?
-            while (getTurn() != 0);
+            while (getTurn() != 0) ;
         }
         // TODO: call a method here to figure out who won.
         // calculateWinner();
         roundInProgress = false;
     }
 
-    private void dealToTable(){
-        while (communityCards.size() < stage.getNumberOfCardsNeeded()){
-            communityCards.add(deck.dealOneCard());
+    private void dealToTable() {
+        while (communityCards.size() < stage.getNumberOfCardsNeeded()) {
+            communityCards.add(deck.dealCard());
         }
     }
 
-    /******************************************************************************************************************
-     ***************************************                Main                ***************************************
-     *****************************************************************************************************************/
-
     // currently used for testing
-    public static void main(String [] args){
-        Table table = new Table();
+    public static void main(String[] args) {
 
+        for (Stage stage : Stage.values()) {
+            System.out.print(stage.toString());
+        }
     }
 }

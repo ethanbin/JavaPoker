@@ -1,6 +1,5 @@
 package com.company;
 
-import com.company.Card;
 import java.util.Collections;
 import java.util.Stack;
 
@@ -10,43 +9,94 @@ import java.util.Stack;
  */
 public class Deck {
 
-    Deck(){
-        init();
-    }
+    private static final int CARDS_PER_SUITE  = 13;
 
-    private static final int CARDS_PER_SUITE = 13;
-    private static final int NUMBER_OF_SUITES = 4;
-
-    private Stack<Card> cards;
+    private Stack<Card> deck;
     private Stack<Card> usedCards;
 
-    private void init() {        //this is essentially the initializer since we only need the deck to be created once
-        cards = new Stack<>();
-        for (int i = 0; i < NUMBER_OF_SUITES; i++) {
-            for (int j = 2; j < CARDS_PER_SUITE + 2; j++) {
-                cards.push(new Card(Card.Suite.values()[i], j));
+    /**
+     * Deck constructor.
+     * We create 2 empty stack collections.
+     * We call init().
+     */
+    public Deck(){
+        deck = new Stack<>();
+        usedCards = new Stack<>();
+        this.init();
+    }
+
+    /**
+     * Initialize deck with 52 cards.
+     * 13 for each suit declared in Card class.
+     */
+    private void init(){
+        for(Card.Suit suit : Card.Suit.values()){
+            for (int j = 2; j < CARDS_PER_SUITE + 2; j++){
+                deck.push(new Card(suit, j));
             }
         }
-        usedCards = new Stack<>();
     }
 
+    /**
+     * If used cards is empty we shuffle the deck collection.
+     */
     public void shuffle() {
-        // restoring used cards back to the deck
-        while (!usedCards.isEmpty())
-            cards.push(usedCards.pop());
 
-        Collections.shuffle(cards);
+        if(!usedCards.isEmpty()) {
+            resetDeck();
+        }
+    	
+        Collections.shuffle(deck);
     }
 
-    public Card dealOneCard() {    // we would have to call this twice when dealing
-        Card deal = cards.pop();    // what is dealt should have its own stack so we don't have to fillDeck every round
-        usedCards.push(deal);
-        return deal;
+    /**
+     * Reset the deck by placing used cards back into deck stack.
+     */
+    public void resetDeck(){
+        while(!usedCards.isEmpty()) {
+            deck.push(usedCards.pop());
+        }
     }
 
+    /**
+     * Pop card from deck collection, place it in used card collection.
+     *
+     * @return Card
+     */
+    public Card dealCard(){
+    	Card deal = deck.pop();
+    	usedCards.push(deal);
+    	return deal;    	
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder deckValues = new StringBuilder("\nCards In Deck: \n\n");
+
+        for (Card card : deck) {
+            deckValues.append(card.toString());
+        }
+
+        return deckValues.toString();
+    }
+
+    // Use this to test that I am initializing the deck correctly.
     public static void main(String[] args) {
         Deck deck = new Deck();
-        deck.init();
-        System.out.printf("ok");
+
+        deck.shuffle();
+
+        System.out.print(deck.dealCard());
+        System.out.print(deck.dealCard());
+        System.out.print(deck.dealCard());
+        System.out.print(deck.dealCard());
+        System.out.print(deck.dealCard());
+        System.out.print(deck.dealCard());
+        System.out.print(deck.dealCard());
+        System.out.print(deck.dealCard());
+        System.out.print(deck.dealCard());
+        System.out.print(deck.dealCard());
+
+        System.out.print(deck);
     }
 }
