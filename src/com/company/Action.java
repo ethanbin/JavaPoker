@@ -35,8 +35,8 @@ public class Action {
 	}
 
 	public void jam() {
-		balance = 0;
 		pot += balance;
+		balance = 0;
 	}
 
 	public void fold() {
@@ -53,7 +53,7 @@ public class Action {
 	
 	@Override
 	public String toString() {
-		return "Action [balance=" + balance + "]";
+		return "Action [pot=" + pot + ", balance=" + balance + "]";
 	}
 
 	public static void main(String[]args) {
