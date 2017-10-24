@@ -27,6 +27,7 @@ public class Deck {
                 cards.push(new Card(Card.Suite.values()[i], j));
             }
         }
+        usedCards = new Stack<>();
     }
 
     public void shuffle() {
