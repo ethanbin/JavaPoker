@@ -8,7 +8,7 @@ import java.util.*;
 public class Player {
 
 	private String username;
-	private int balance;
+	private static int balance;
 	private boolean smallBlind;
 	private boolean bigBlind;
 	private boolean canPlay;
@@ -39,7 +39,7 @@ public class Player {
 		return bigBlind;
 	}
 
-	public int getBalance() {
+	public static int getBalance() {
 		return balance;
 	}
 
