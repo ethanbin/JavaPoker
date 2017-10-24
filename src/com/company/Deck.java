@@ -9,7 +9,7 @@ import java.util.Stack;
  */
 public class Deck {
 
-    private static final int CARDS_PER_SUITE  = 13;
+    private static final int CARDS_PER_SUIT  = 13;
 
     private Stack<Card> deck;
     private Stack<Card> usedCards;
@@ -31,7 +31,7 @@ public class Deck {
      */
     private void init(){
         for(Card.Suit suit : Card.Suit.values()){
-            for (int j = 2; j < CARDS_PER_SUITE + 2; j++){
+            for (int j = 2; j < CARDS_PER_SUIT + 2; j++){
                 deck.push(new Card(suit, j));
             }
         }
