@@ -30,7 +30,7 @@ public class Table {
 
         @Override
         public String toString() {
-            return "Stage " + this.name() + " needs " + getNumberOfCardsToDeal() + " cards on the table.\n";
+            return "Stage " + this.name() + " has " + getNumberOfCardsToDeal() + " cards on the table.\n";
         }
     }
 
