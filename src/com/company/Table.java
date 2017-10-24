@@ -90,18 +90,14 @@ public class Table {
     private void playRound() {
         // TODO:    add condition to loop checking that playing users > 1, maybe with static function in User class.
         // This loop will go through each user's turn and dealing cards.
-        for (int i = 0; i < Stage.size; i++) {
+        for (Stage stage : Stage.stageValues) {
             switch (stage) {
-                case PREFLOP:
-                    //dealToPlayers():
-                    nextTurn();
-                    break;
-                case RIVER:
-                    dealToTable();
+                case PRE_FLOP:
+                    //dealToTable(stage.getNumberOfCardsToDeal());
                     nextTurn();
                     break;
                 default:
-                    dealToTable();
+                    dealToTable(stage.getNumberOfCardsToDeal());
                     nextTurn();
                     break;
             }
@@ -114,8 +110,8 @@ public class Table {
         roundInProgress = false;
     }
 
-    private void dealToTable() {
-        while (communityCards.size() < stage.getNumberOfCardsNeeded()) {
+    private void dealToTable(int numberOfCardsToDeal) {
+        while (communityCards.size() < numberOfCardsToDeal) {
             communityCards.add(deck.dealCard());
         }
     }
