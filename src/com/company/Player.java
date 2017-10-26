@@ -12,10 +12,12 @@ public class Player {
 	private boolean smallBlind;
 	private boolean bigBlind;
 	private boolean canPlay;
-	private static int playerID = 0;
+	private int playerID = 0;
+	private static int playerCount = 0;
 
 	Player(String username, int balance){
-		playerID = getPlayerID();
+		playerCount++;
+		playerID = playerCount;
 		this.username = username;
 		this.balance = balance;
 	}
@@ -48,7 +50,6 @@ public class Player {
 	}
 	
 	public int getPlayerID() {
-		playerID++;
 		return playerID;
 	}
 	
@@ -67,6 +68,6 @@ public class Player {
 		System.out.println(m.toString());
 		Player n = new Player("David", 251);
 		System.out.println(n.toString());
-		System.out.println(k.getPlayerID());
+		System.out.println(n.getPlayerID());
 	}
 }
