@@ -14,6 +14,7 @@ public class Player {
 	private boolean canPlay;
 	private int playerID = 0;
 	private static int playerCount = 0;
+	private Action action = new Action();
 
 	Player(String username, int balance){
 		playerCount++;
@@ -41,7 +42,7 @@ public class Player {
 		return bigBlind;
 	}
 
-	public static int getBalance() {
+	public int getBalance() {
 		return balance;
 	}
 
