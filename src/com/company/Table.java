@@ -42,7 +42,7 @@ public class Table {
 
     private boolean roundInProgress = false;
 
-    private final int maxUsers = 6;
+    private final int MAX_USERS = 6;
 
     // Cards dealt onto table for all to use;
     private List<Card> communityCards = new ArrayList<>();
@@ -50,6 +50,13 @@ public class Table {
     private Deck deck = new Deck();
 
     private List<Player> players = new ArrayList<>();
+
+    public boolean addPlayer(Player player){
+        if (players.size() >= MAX_USERS)
+            return false;
+        players.add(player);
+        return true;
+    }
 
     // TODO: uncomment when the User class is made
 //    public void nextTurn(){
