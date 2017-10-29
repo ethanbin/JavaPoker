@@ -9,7 +9,7 @@ import java.util.List;
 public class Table {
     enum Stage {
         // each number value represents number of cards the table should have
-        PRE_FLOP(0), FLOP(3), TURN(4), RIVER(5);
+        PRE_FLOP(0), FLOP(3), TURN(4), RIVER(5), SHOWDOWN(5);
 
         private int numberOfCardsToDeal;
 
