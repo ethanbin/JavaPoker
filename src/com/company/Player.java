@@ -32,11 +32,6 @@ public class Player {
 
     protected void displayPlayerInfo() {
         System.out.println(this);
-        System.out.println(username+"'s cards:");
-        for (Card card : holeCards) {
-            System.out.print(card);
-        }
-        System.out.println("\n");
     }
 
     protected int getBalance() {
@@ -57,16 +52,24 @@ public class Player {
 
     @Override
     public String toString() {
-        String playerInfo;
+        StringBuilder playerInfo = new StringBuilder("username = " + username + "\n");
 
-        playerInfo = "username = " + username + "\n";
-        playerInfo += username + "'s Balance is $" + getBalance() + "\n";
+        playerInfo.append(username).append("'s Balance is $").append(getBalance()).append("\n");
         if(canPlay()){
-            playerInfo += username + " is still able to play.";
+            playerInfo.append(username).append(" is still able to play.");
         } else {
-            playerInfo += username + " is no longer able to play.";
+            playerInfo.append(username).append(" is no longer able to play.");
         }
-        return playerInfo;
+
+        playerInfo.append("\n").append(username).append("'s cards:");
+
+        for (Card card : holeCards) {
+            playerInfo.append(card.toString());
+        }
+
+        playerInfo.append("\n");
+
+        return playerInfo.toString();
     }
 
     public static void main(String[] args) {
@@ -91,7 +94,7 @@ public class Player {
         System.out.println("Players Information...\n");
 
         for (Player player : players) {
-            player.displayPlayerInfo();
+            System.out.println(player);
         }
         
     }
