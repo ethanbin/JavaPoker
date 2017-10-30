@@ -71,7 +71,7 @@ public class Deck {
 
     @Override
     public String toString(){
-        StringBuilder deckValues = new StringBuilder("\nCards In Deck: \n\n");
+        StringBuilder deckValues = new StringBuilder("\n\nCards In Deck: \n");
 
         for (Card card : deck) {
             deckValues.append(card.toString());
