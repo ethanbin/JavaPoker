@@ -8,24 +8,19 @@ import java.util.*;
 public class Player {
 
 	private String username;
-	private static int balance;
+	private int balance;
 	private boolean smallBlind;
 	private boolean bigBlind;
 	private boolean canPlay;
-	private int playerID = 0;
-	private static int playerCount = 0;
-	private Action action = new Action();
 
 	Player(String username, int balance){
-		playerCount++;
-		playerID = playerCount;
 		this.username = username;
 		this.balance = balance;
 	}
 
-	public void display() {
-		//should display their name, balance, and two cards
-		//might also be displaying their possible actions when its their turn?
+	public void displayPlayerInfo() {
+		//should displayPlayerInfo their name, balance, and two cards
+		//might also be displaying their possible action when its their turn?
 	}
 
 //	public boolean isDealer() {
@@ -50,14 +45,9 @@ public class Player {
 		return getBalance() > 0;
 	}
 	
-	public int getPlayerID() {
-		return playerID;
-	}
-	
 	@Override
 	public String toString() {
-		return "Player [username=" + username + ", balance=" + getBalance() + ", canPlay=" + canPlay() + ", PlayerID="
-				+ playerID + "]";
+		return "Player [username=" + username + ", balance=" + getBalance() + ", canPlay=" + canPlay() + "]";
 	}
 	
 	public static void main(String [] args) {
@@ -69,6 +59,5 @@ public class Player {
 		System.out.println(m.toString());
 		Player n = new Player("David", 251);
 		System.out.println(n.toString());
-		System.out.println(n.getPlayerID());
 	}
 }

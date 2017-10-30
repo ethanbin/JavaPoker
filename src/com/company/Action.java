@@ -7,13 +7,11 @@ import java.util.*;
  */  
 
 public class Action {
-	
-	
 	private boolean fold = false;
 	private int call = 10;
 	private int raise;
 	private int pot;
-	private int balance = Player.getBalance();
+	private int balance;
 
 	public void check() {
 		balance = balance - 0;
@@ -42,11 +40,11 @@ public class Action {
 	public void fold() {
 		fold = true;
 	}
-	
+
 	public boolean hasFold() {
 		return fold;
 	}
-	
+
 	public int getPot() {
 		return pot;
 	}
