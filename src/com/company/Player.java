@@ -53,17 +53,22 @@ public class Player {
     public void check() {
     }
 
+    public void fold() {
+    }
+
     public void call() {
+    }
+
+    public int bet(int amount) {
+        balance  = balance - amount;
+        System.out.println(getUserName() + " bets " + amount);
+
+        return amount;
     }
 
     public void raise() {
     }
 
-    public void jam() {
-    }
-
-    public void fold() {
-    }
 
     @Override
     public String toString() {

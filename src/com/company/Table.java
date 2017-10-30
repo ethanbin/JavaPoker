@@ -88,6 +88,8 @@ public class Table {
         System.out.println("Stage: Pre Flop:");
         setDealerAndBlinds();
         dealPlayersHoleCards();
+        requestSmallBlind();
+        requestBigBlind();
         System.out.println(this);
     }
 
@@ -146,6 +148,14 @@ public class Table {
         }
     }
 
+    private void requestSmallBlind(){
+        pot += players.get(smallBlindIndex).bet(TABLE_MINIMUM_BET/2);
+    }
+
+    private void requestBigBlind(){
+        pot += players.get(bigBlindIndex).bet(TABLE_MINIMUM_BET);
+    }
+
     private void dealToTable(int numberOfCardsToDeal) {
         while (numberOfCardsToDeal != 0) {
             communityCards.add(deck.dealCard());
@@ -188,9 +198,9 @@ public class Table {
         table.playerJoinsGame(new Player("David"));
 
 
-        while (table.getActivePlayers() != 1){
+       /* while (table.getActivePlayers() != 1){
             table.playMatch();
-        }
+        }*/
 
         table.playMatch();
     }
