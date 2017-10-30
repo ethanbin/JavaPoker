@@ -23,6 +23,7 @@ public class Deck {
         deck = new Stack<>();
         usedCards = new Stack<>();
         this.init();
+        this.shuffle();
     }
 
     /**
@@ -83,8 +84,6 @@ public class Deck {
     // Use this to test that I am initializing the deck correctly.
     public static void main(String[] args) {
         Deck deck = new Deck();
-
-        deck.shuffle();
 
         System.out.print(deck.dealCard());
         System.out.print(deck.dealCard());
