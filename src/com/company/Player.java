@@ -12,18 +12,18 @@ public class Player {
     private int balance;
     private boolean smallBlind;
     private boolean bigBlind;
-    private Stack<Card> playerCards;
+    private Stack<Card> holeCards;
 
     Player(String username, int balance) {
         this.username = username;
         this.balance = balance;
-        this.playerCards = new Stack<>();
+        this.holeCards = new Stack<>();
     }
 
     public void displayPlayerInfo() {
         System.out.println(this);
         System.out.println(username+"'s cards:");
-        for (Card card : playerCards) {
+        for (Card card : holeCards) {
             System.out.print(card);
         }
         System.out.println("\n");
@@ -52,7 +52,7 @@ public class Player {
     }
 
     public void givePlayerCard(Card card) {
-        this.playerCards.push(card);
+        this.holeCards.push(card);
     }
 
     @Override
