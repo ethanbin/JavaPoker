@@ -23,13 +23,15 @@ public class Table {
     private int dealerIndex;
     private int smallBlindIndex;
     private int bigBlindIndex;
+    private int firstToBetIndex;
     private int activePlayers;
+    private int amountToCall;
 
-    public Table(){
+    public Table() {
         this.init();
     }
 
-    private void init(){
+    private void init() {
         pot = 0;
         deck = new Deck();
         communityCards = new Stack<>();
@@ -37,17 +39,18 @@ public class Table {
         tableIsFull = false;
         dealerIndex = smallBlindIndex = bigBlindIndex = -1;
         activePlayers = 0;
+        amountToCall = 0;
     }
 
     public int getActivePlayers() {
         return activePlayers;
     }
 
-    public void playerJoinsGame(Player player){
-        if (!tableIsFull){
+    public void playerJoinsGame(Player player) {
+        if (!tableIsFull) {
             players.add(player);
             activePlayers++;
-            if (players.size() == TABLE_SEATS){
+            if (players.size() == TABLE_SEATS) {
                 tableIsFull = true;
             }
 
@@ -58,14 +61,14 @@ public class Table {
         System.out.println("Table is Full " + player.getUserName() + " cannot join game.\n");
     }
 
-    public void playMatch(){
+    public void playMatch() {
         for (Stage stage : Stage.values()) {
             callStageMethod(stage);
         }
     }
 
-    private void callStageMethod(Stage stage){
-        switch (stage){
+    private void callStageMethod(Stage stage) {
+        switch (stage) {
             case PRE_FLOP:
                 stagePreFlop();
                 break;
@@ -84,63 +87,59 @@ public class Table {
         }
     }
 
-    private void stagePreFlop(){
+    private void stagePreFlop() {
         System.out.println("Stage: Pre Flop:");
         setDealerAndBlinds();
         dealPlayersHoleCards();
         requestSmallBlind();
         requestBigBlind();
+        goThroughRoundOfBetting();
         System.out.println(this);
     }
 
-    private void stageFlop(){
+    private void stageFlop() {
         System.out.println("Stage: Flop:");
         dealToTable(3);
         System.out.println(this);
     }
 
-    private void stageTurn(){
+    private void stageTurn() {
         System.out.println("Stage: Turn:");
         dealToTable(1);
         System.out.println(this);
     }
 
-    private void stageRiver(){
+    private void stageRiver() {
         System.out.println("Stage: River:");
         dealToTable(1);
         System.out.println(this);
     }
 
-    private void stageShowDown(){
+    private void stageShowDown() {
         System.out.println("Stage: Showdown:");
         System.out.println(this);
     }
 
-    private void setDealerAndBlinds(){
-        int indexLimit = players.size() - 1;
-
+    private void setDealerAndBlinds() {
         dealerIndex++;
-        if(dealerIndex > indexLimit){
-            dealerIndex = 0;
-        }
+        dealerIndex = verifyIndexNotOutOfBounds(dealerIndex);
 
         smallBlindIndex = dealerIndex + 1;
-        if(smallBlindIndex > indexLimit){
-            smallBlindIndex = 0;
-        }
+        smallBlindIndex = verifyIndexNotOutOfBounds(smallBlindIndex);
 
         bigBlindIndex = smallBlindIndex + 1;
-        if(bigBlindIndex > indexLimit){
-            bigBlindIndex = 0;
-        }
+        bigBlindIndex = verifyIndexNotOutOfBounds(bigBlindIndex);
+
+        firstToBetIndex = bigBlindIndex + 1;
+        firstToBetIndex = verifyIndexNotOutOfBounds(firstToBetIndex);
     }
 
-    private void dealPlayersHoleCards(){
+    private void dealPlayersHoleCards() {
         int timesToDeal = 2;
 
         System.out.println("Dealing Cards To Players...\n");
 
-        while (timesToDeal != 0){
+        while (timesToDeal != 0) {
             for (Player player : players) {
                 player.givePlayerCard(deck.dealCard());
             }
@@ -148,12 +147,65 @@ public class Table {
         }
     }
 
-    private void requestSmallBlind(){
-        pot += players.get(smallBlindIndex).bet(TABLE_MINIMUM_BET/2);
+    private void requestSmallBlind() {
+        pot += players.get(smallBlindIndex).bet(TABLE_MINIMUM_BET / 2);
     }
 
-    private void requestBigBlind(){
+    private void requestBigBlind() {
         pot += players.get(bigBlindIndex).bet(TABLE_MINIMUM_BET);
+        amountToCall = TABLE_MINIMUM_BET;
+    }
+
+    // TODO: Still needs further testing for edge cases. ie: firstToBetIndex folds.
+    private void goThroughRoundOfBetting() {
+        boolean continueBetting = true;
+        int currentTurnIndex = firstToBetIndex;
+        int betValue;
+
+        while (continueBetting) {
+            Player currentPlayer = players.get(currentTurnIndex);
+
+            if(currentPlayer.getIsFolded()){
+                currentTurnIndex++;
+                currentTurnIndex = verifyIndexNotOutOfBounds(currentTurnIndex);
+                continue;
+            }
+
+            betValue = currentPlayer.getPlayerBetValue(amountToCall);
+
+            switch (currentPlayer.getAction()) {
+                case "CH":
+                    pot += betValue;
+                    break;
+                case "C":
+                    pot += betValue;
+                    break;
+                case "R":
+                    amountToCall += betValue;
+                    pot += betValue;
+                    break;
+                default:
+                    amountToCall += betValue;
+                    break;
+            }
+
+            currentTurnIndex++;
+            currentTurnIndex = verifyIndexNotOutOfBounds(currentTurnIndex);
+
+            if(currentTurnIndex == firstToBetIndex && players.get(firstToBetIndex).getCurrentBet() == amountToCall){
+                continueBetting = false;
+            }
+        }
+    }
+
+    private int verifyIndexNotOutOfBounds(int index){
+        int indexLimit = players.size() - 1;
+
+        if (index > indexLimit) {
+            return 0;
+        }
+
+        return index;
     }
 
     private void dealToTable(int numberOfCardsToDeal) {
