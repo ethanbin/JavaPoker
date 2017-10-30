@@ -115,19 +115,19 @@ public class Table {
     }
 
     private void setDealerAndBlinds(){
-        int indexLimit = players.size()-1;
+        int indexLimit = players.size() - 1;
 
         dealerIndex++;
         if(dealerIndex > indexLimit){
             dealerIndex = 0;
         }
 
-        smallBlindIndex = dealerIndex++;
+        smallBlindIndex = dealerIndex + 1;
         if(smallBlindIndex > indexLimit){
             smallBlindIndex = 0;
         }
 
-        bigBlindIndex = smallBlindIndex++;
+        bigBlindIndex = smallBlindIndex + 1;
         if(bigBlindIndex > indexLimit){
             bigBlindIndex = 0;
         }
@@ -188,9 +188,9 @@ public class Table {
         table.playerJoinsGame(new Player("David"));
 
 
-        /*while (table.getActivePlayers() != 1){
+        while (table.getActivePlayers() != 1){
             table.playMatch();
-        }*/
+        }
 
         table.playMatch();
     }
