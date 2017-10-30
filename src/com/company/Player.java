@@ -50,6 +50,21 @@ public class Player {
         return username;
     }
 
+    public void check() {
+    }
+
+    public void call() {
+    }
+
+    public void raise() {
+    }
+
+    public void jam() {
+    }
+
+    public void fold() {
+    }
+
     @Override
     public String toString() {
         StringBuilder playerInfo = new StringBuilder("username = " + username + "\n");
