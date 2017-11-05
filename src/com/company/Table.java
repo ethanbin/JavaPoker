@@ -103,9 +103,12 @@ public class Table {
     }
 
     private void stagePreFlop(Stage stage) {
+
         System.out.println("Stage: " + stage.toString());
         setDealerAndBlinds();
-        dealPlayersHoleCards();
+        int numberOfCardsPerPlayer = 2;
+        for (int i = 0; i < numberOfCardsPerPlayer; i++)
+            dealEachPlayerOneCard();
         requestSmallBlind();
         requestBigBlind();
         goThroughRoundOfBetting();
@@ -131,17 +134,11 @@ public class Table {
         firstToBetIndex = getNextValidatedPlayerIndex(bigBlindIndex);
     }
 
-    private void dealPlayersHoleCards() {
-        int timesToDeal = 2;
-
+    private void dealEachPlayerOneCard() {
         System.out.println("Dealing Cards To Players...\n");
-
-        while (timesToDeal != 0) {
             for (Player player : players) {
                 player.givePlayerCard(deck.dealCard());
             }
-            timesToDeal--;
-        }
     }
 
     private void requestSmallBlind() {
