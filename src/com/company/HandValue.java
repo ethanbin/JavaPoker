@@ -75,7 +75,7 @@ public class HandValue {
     }
 
     // TODO make this also work with the ace as a 2
-    public void findRoyalFlushOrStraightFlush() {
+    private void findRoyalFlushOrStraightFlush() {
         Collections.sort(holeAndCommunityCards, new SuitComparator());
         int highValue = holeAndCommunityCards.get(0).getValue();
 
@@ -108,8 +108,8 @@ public class HandValue {
             wasEvaluated = true;
         }
     }
-
-    public void findFlush() {
+    
+    private void findFlush() {
         Collections.sort(holeAndCommunityCards, new SuitComparator());
         int highValue = holeAndCommunityCards.get(0).getValue();
 
