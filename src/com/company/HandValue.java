@@ -25,6 +25,9 @@ public class HandValue {
     private List<Integer> handValue;
     private List<Card> holeAndCommunityCards;
     private boolean wasEvaluated;
+    private final int aceLowValue = 1;
+    private final int aceHighValue = 14;
+
 
     HandValue(List<Card> communityCards, List<Card> holeCards) {
         init();
@@ -40,11 +43,8 @@ public class HandValue {
 
     public void evaluateHand(){
 
-        if (!wasEvaluated){
-            findRoyalFlush();
-        }
-        if (!wasEvaluated){
-            findStraightFlush();
+        if (!wasEvaluated) {
+            findRoyalFlushOrStraightFlush();
         }
         if (!wasEvaluated){
             // findFourOfAKind();
@@ -73,7 +73,8 @@ public class HandValue {
 
     }
 
-    public void findRoyalFlush() {
+    // TODO make this also work with the ace as a 2
+    public void findRoyalFlushOrStraightFlush() {
         Collections.sort(holeAndCommunityCards, new SuitComparator());
         int highValue = holeAndCommunityCards.get(0).getValue();
 
@@ -84,48 +85,24 @@ public class HandValue {
         // (true when last card(s) and current card are the same suit)
         boolean potentiallyAStraightFlush = false;
         for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAStraightFlush) && matchingCardsInARow < 5; i++) {
-            if (holeAndCommunityCards.get(i - 1).getSuitValue() == holeAndCommunityCards.get(i).getSuitValue() &&
-                    holeAndCommunityCards.get(i - 1).getValue() == holeAndCommunityCards.get(i).getValue() + 1){
+            Card lastCard = (holeAndCommunityCards.get(i - 1));
+            Card currentCard = holeAndCommunityCards.get(i);
+            if (lastCard.getSuitValue() == currentCard.getSuitValue() &&
+                    lastCard.getValue() == currentCard.getValue() + 1){
                 potentiallyAStraightFlush = true;
                 matchingCardsInARow++;
             }
             else{
-                highValue = holeAndCommunityCards.get(i).getValue();
+                highValue = currentCard.getValue();
                 potentiallyAStraightFlush = false;
                 matchingCardsInARow = 1;
             }
         }
-        if (matchingCardsInARow == 5 && highValue == 14){
-            handValue.add(HandRankings.ROYAL_FLUSH.getHandRankingStrength());
-            handValue.add(highValue);
-            wasEvaluated = true;
-        }
-    }
-
-    public void findStraightFlush() {
-        Collections.sort(holeAndCommunityCards, new SuitComparator());
-        int highValue = holeAndCommunityCards.get(0).getValue();
-
-        // represents how many cards of the same suit we found in a row so far
-        int matchingCardsInARow = 1;
-
-        // bool value represents whether or not we might be able to have a straight flush at the moment
-        // (true when last card(s) and current card are the same suit)
-        boolean potentiallyAStraightFlush = false;
-        for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAStraightFlush) && matchingCardsInARow < 5; i++) {
-            if (holeAndCommunityCards.get(i - 1).getSuitValue() == holeAndCommunityCards.get(i).getSuitValue() &&
-                    holeAndCommunityCards.get(i - 1).getValue() == holeAndCommunityCards.get(i).getValue() + 1){
-                potentiallyAStraightFlush = true;
-                matchingCardsInARow++;
-            }
-            else{
-                highValue = holeAndCommunityCards.get(i).getValue();
-                potentiallyAStraightFlush = false;
-                matchingCardsInARow = 1;
-            }
-        }
-        if (matchingCardsInARow == 5){
-            handValue.add(HandRankings.STRAIGHT_FLUSH.getHandRankingStrength());
+        if (matchingCardsInARow == 5) {
+            if (highValue == aceHighValue)
+                handValue.add(HandRankings.ROYAL_FLUSH.getHandRankingStrength());
+            else
+                handValue.add(HandRankings.STRAIGHT_FLUSH.getHandRankingStrength());
             handValue.add(highValue);
             wasEvaluated = true;
         }
@@ -180,7 +157,7 @@ public class HandValue {
         List<Card> communityCards = new ArrayList<>();
         communityCards.add(new Card(Card.Suit.DIAMONDS, 12));
         communityCards.add(new Card(Card.Suit.DIAMONDS, 13));
-        communityCards.add(new Card(Card.Suit.DIAMONDS, 9));
+        communityCards.add(new Card(Card.Suit.DIAMONDS, 14));
         communityCards.add(new Card(Card.Suit.CLUBS, 6));
         communityCards.add(new Card(Card.Suit.CLUBS, 10));
 
