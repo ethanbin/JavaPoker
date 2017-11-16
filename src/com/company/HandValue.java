@@ -24,6 +24,7 @@ public class HandValue {
     // first value in the list is the hand ranking value, then the high card
     private List<Integer> handValue;
     private List<Card> holeAndCommunityCards;
+    private boolean wasEvaluated;
 
     HandValue(List<Card> communityCards, List<Card> holeCards) {
         init();
@@ -34,17 +35,73 @@ public class HandValue {
     private void init(){
         handValue = new ArrayList<>();
         holeAndCommunityCards = new ArrayList<>();
+        wasEvaluated = false;
     }
 
     public void evaluateHand(){
 
-        if (handValue.size() == 0){
+        if (!wasEvaluated){
+            // findRoyalFlush
+        }
+        if (!wasEvaluated){
+            findStraightFlush();
+        }
+        if (!wasEvaluated){
+            // findFourOfAKind();
+        }
+        if (!wasEvaluated){
+            // findFullHouse();
+        }
+        if (!wasEvaluated){
             findFlush();
+        }
+        if (!wasEvaluated){
+            // findStraight();
+        }
+        if (!wasEvaluated){
+            // findThreeOfAKind();
+        }
+        if (!wasEvaluated){
+            // findTwoPairs();
+        }
+        if (!wasEvaluated){
+            // findPair();
+        }
+        if (!wasEvaluated) {
+            // findHighCard();
         }
 
     }
 
-    // if exists, return high card in the royal flush. if not, return -1
+    public void findStraightFlush() {
+        Collections.sort(holeAndCommunityCards, new SuitComparator());
+        int highValue = holeAndCommunityCards.get(0).getValue();
+
+        // represents how many cards of the same suit we found in a row so far
+        int matchingCardsInARow = 1;
+
+        // bool value represents whether or not we might be able to have a straight flush at the moment
+        // (true when last card(s) and current card are the same suit)
+        boolean potentiallyAStraightFlush = false;
+        for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAStraightFlush) && matchingCardsInARow < 5; i++) {
+            if (holeAndCommunityCards.get(i - 1).getSuitValue() == holeAndCommunityCards.get(i).getSuitValue() &&
+                    holeAndCommunityCards.get(i - 1).getValue() == holeAndCommunityCards.get(i).getValue() - 1){
+                potentiallyAStraightFlush = true;
+                matchingCardsInARow++;
+            }
+            else{
+                highValue = holeAndCommunityCards.get(i).getValue();
+                potentiallyAStraightFlush = false;
+                matchingCardsInARow = 1;
+            }
+        }
+        if (matchingCardsInARow == 5){
+            handValue.add(HandRankings.FLUSH.getHandRankingStrength());
+            handValue.add(highValue);
+            wasEvaluated = true;
+        }
+    }
+
     public void findFlush() {
         Collections.sort(holeAndCommunityCards, new SuitComparator());
         int highValue = holeAndCommunityCards.get(0).getValue();
@@ -67,14 +124,16 @@ public class HandValue {
             }
         }
         if (matchingCardsInARow == 5){
-            handValue.add(HandRankings.FLUSH.getHandRankingStrength());
+            handValue.add(HandRankings.STRAIGHT_FLUSH.getHandRankingStrength());
             handValue.add(highValue);
-
+            wasEvaluated = true;
         }
     }
 
     @Override
     public String toString(){
+        if (handValue.size() == 0)
+            return "Hand not evaluated.";
         HandRankings[] rankings = HandRankings.values();
         Collections.reverse(Arrays.asList(rankings));
         String ret = rankings[handValue.get(0)].toString() + ": ";
@@ -92,7 +151,7 @@ public class HandValue {
         List<Card> communityCards = new ArrayList<>();
         communityCards.add(new Card(Card.Suit.DIAMONDS, 6));
         communityCards.add(new Card(Card.Suit.DIAMONDS, 7));
-        communityCards.add(new Card(Card.Suit.DIAMONDS, 2));
+        communityCards.add(new Card(Card.Suit.DIAMONDS, 5));
         communityCards.add(new Card(Card.Suit.CLUBS, 6));
         communityCards.add(new Card(Card.Suit.CLUBS, 10));
 
