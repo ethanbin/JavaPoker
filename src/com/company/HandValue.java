@@ -41,7 +41,7 @@ public class HandValue {
     public void evaluateHand(){
 
         if (!wasEvaluated){
-            // findRoyalFlush
+            findRoyalFlush();
         }
         if (!wasEvaluated){
             findStraightFlush();
@@ -73,6 +73,35 @@ public class HandValue {
 
     }
 
+    public void findRoyalFlush() {
+        Collections.sort(holeAndCommunityCards, new SuitComparator());
+        int highValue = holeAndCommunityCards.get(0).getValue();
+
+        // represents how many cards of the same suit we found in a row so far
+        int matchingCardsInARow = 1;
+
+        // bool value represents whether or not we might be able to have a straight flush at the moment
+        // (true when last card(s) and current card are the same suit)
+        boolean potentiallyAStraightFlush = false;
+        for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAStraightFlush) && matchingCardsInARow < 5; i++) {
+            if (holeAndCommunityCards.get(i - 1).getSuitValue() == holeAndCommunityCards.get(i).getSuitValue() &&
+                    holeAndCommunityCards.get(i - 1).getValue() == holeAndCommunityCards.get(i).getValue() + 1){
+                potentiallyAStraightFlush = true;
+                matchingCardsInARow++;
+            }
+            else{
+                highValue = holeAndCommunityCards.get(i).getValue();
+                potentiallyAStraightFlush = false;
+                matchingCardsInARow = 1;
+            }
+        }
+        if (matchingCardsInARow == 5 && highValue == 14){
+            handValue.add(HandRankings.ROYAL_FLUSH.getHandRankingStrength());
+            handValue.add(highValue);
+            wasEvaluated = true;
+        }
+    }
+
     public void findStraightFlush() {
         Collections.sort(holeAndCommunityCards, new SuitComparator());
         int highValue = holeAndCommunityCards.get(0).getValue();
@@ -85,7 +114,7 @@ public class HandValue {
         boolean potentiallyAStraightFlush = false;
         for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAStraightFlush) && matchingCardsInARow < 5; i++) {
             if (holeAndCommunityCards.get(i - 1).getSuitValue() == holeAndCommunityCards.get(i).getSuitValue() &&
-                    holeAndCommunityCards.get(i - 1).getValue() == holeAndCommunityCards.get(i).getValue() - 1){
+                    holeAndCommunityCards.get(i - 1).getValue() == holeAndCommunityCards.get(i).getValue() + 1){
                 potentiallyAStraightFlush = true;
                 matchingCardsInARow++;
             }
@@ -96,7 +125,7 @@ public class HandValue {
             }
         }
         if (matchingCardsInARow == 5){
-            handValue.add(HandRankings.FLUSH.getHandRankingStrength());
+            handValue.add(HandRankings.STRAIGHT_FLUSH.getHandRankingStrength());
             handValue.add(highValue);
             wasEvaluated = true;
         }
@@ -124,7 +153,7 @@ public class HandValue {
             }
         }
         if (matchingCardsInARow == 5){
-            handValue.add(HandRankings.STRAIGHT_FLUSH.getHandRankingStrength());
+            handValue.add(HandRankings.FLUSH.getHandRankingStrength());
             handValue.add(highValue);
             wasEvaluated = true;
         }
@@ -145,13 +174,13 @@ public class HandValue {
 
     public static void main(String[] args) {
         List<Card> holeCards = new ArrayList<>();
-        holeCards.add(new Card(Card.Suit.DIAMONDS, 3));
-        holeCards.add(new Card(Card.Suit.DIAMONDS, 4));
+        holeCards.add(new Card(Card.Suit.DIAMONDS, 10));
+        holeCards.add(new Card(Card.Suit.DIAMONDS, 11));
 
         List<Card> communityCards = new ArrayList<>();
-        communityCards.add(new Card(Card.Suit.DIAMONDS, 6));
-        communityCards.add(new Card(Card.Suit.DIAMONDS, 7));
-        communityCards.add(new Card(Card.Suit.DIAMONDS, 5));
+        communityCards.add(new Card(Card.Suit.DIAMONDS, 12));
+        communityCards.add(new Card(Card.Suit.DIAMONDS, 13));
+        communityCards.add(new Card(Card.Suit.DIAMONDS, 9));
         communityCards.add(new Card(Card.Suit.CLUBS, 6));
         communityCards.add(new Card(Card.Suit.CLUBS, 10));
 
