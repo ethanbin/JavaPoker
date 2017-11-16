@@ -48,7 +48,7 @@ public class HandValue {
             findRoyalFlushOrStraightFlush();
         }
         if (!wasEvaluated){
-            // findFourOfAKind();
+            findFourOfAKind();
         }
         if (!wasEvaluated){
             // findFullHouse();
@@ -108,7 +108,46 @@ public class HandValue {
             wasEvaluated = true;
         }
     }
-    
+
+    private void findFourOfAKind(){
+        Collections.sort(holeAndCommunityCards, new ValueComparator());
+        int highValue = holeAndCommunityCards.get(0).getValue();
+        int kicker = highValue;
+
+        // represents how many cards of the same suit we found in a row so far
+        int numberOfMatchingValues = 1;
+        final int fourOfAKindCount = 4;
+
+        // bool value represents whether or not we might be able to have a straight flush at the moment
+        // (true when last card(s) and current card are the same suit)
+        for (int i = 1; i < holeAndCommunityCards.size() && numberOfMatchingValues < fourOfAKindCount; i++) {
+            Card lastCard = holeAndCommunityCards.get(i - 1);
+            Card currentCard = holeAndCommunityCards.get(i);
+            if (lastCard.getValue() == currentCard.getValue()){
+                numberOfMatchingValues++;
+            }
+            else{
+                highValue = currentCard.getValue();
+                numberOfMatchingValues = 1;
+            }
+        }
+
+        // find kicker
+        for (Card c : holeAndCommunityCards){
+            if (c.getValue() != highValue){
+                kicker = c.getValue();
+                break;
+            }
+        }
+
+        if (numberOfMatchingValues == fourOfAKindCount) {
+            handValue.add(HandRankings.FOUR_OF_A_KIND.getHandRankingStrength());
+            handValue.add(highValue);
+            handValue.add(kicker);
+            wasEvaluated = true;
+        }
+    }
+
     private void findFlush() {
         Collections.sort(holeAndCommunityCards, new SuitComparator());
         int highValue = holeAndCommunityCards.get(0).getValue();
@@ -146,7 +185,10 @@ public class HandValue {
         HandRankings[] rankings = HandRankings.values();
         Collections.reverse(Arrays.asList(rankings));
         String ret = rankings[handValue.get(0)].toString() + ": ";
-        for (int i = 1; i < handValue.size(); i++) {
+        ret += handValue.get(1).toString();
+        if (handValue.size() > 2)
+            ret += ", Kicker(s): ";
+        for (int i = 2; i < handValue.size(); i++) {
             ret += handValue.get(i) + " ";
         }
         return ret;
@@ -154,14 +196,14 @@ public class HandValue {
 
     public static void main(String[] args) {
         List<Card> holeCards = new ArrayList<>();
-        holeCards.add(new Card(Card.Suit.DIAMONDS, 10));
-        holeCards.add(new Card(Card.Suit.DIAMONDS, 11));
+        holeCards.add(new Card(Card.Suit.SPADES, 9));
+        holeCards.add(new Card(Card.Suit.SPADES, 10));
 
         List<Card> communityCards = new ArrayList<>();
-        communityCards.add(new Card(Card.Suit.DIAMONDS, 12));
-        communityCards.add(new Card(Card.Suit.DIAMONDS, 13));
-        communityCards.add(new Card(Card.Suit.DIAMONDS, 14));
-        communityCards.add(new Card(Card.Suit.CLUBS, 6));
+        communityCards.add(new Card(Card.Suit.SPADES, 11));
+        communityCards.add(new Card(Card.Suit.SPADES, 12));
+        communityCards.add(new Card(Card.Suit.SPADES, 2));
+        communityCards.add(new Card(Card.Suit.CLUBS, 12));
         communityCards.add(new Card(Card.Suit.CLUBS, 10));
 
         HandValue hv = new HandValue(holeCards, communityCards);
