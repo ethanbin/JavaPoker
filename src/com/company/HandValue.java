@@ -27,6 +27,7 @@ public class HandValue {
     private boolean wasEvaluated;
     private final int aceLowValue = 1;
     private final int aceHighValue = 14;
+    private final int handValueSize = 5;
 
 
     HandValue(List<Card> communityCards, List<Card> holeCards) {
@@ -84,7 +85,7 @@ public class HandValue {
         // bool value represents whether or not we might be able to have a straight flush at the moment
         // (true when last card(s) and current card are the same suit)
         boolean potentiallyAStraightFlush = false;
-        for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAStraightFlush) && matchingCardsInARow < 5; i++) {
+        for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAStraightFlush) && matchingCardsInARow < handValueSize; i++) {
             Card lastCard = (holeAndCommunityCards.get(i - 1));
             Card currentCard = holeAndCommunityCards.get(i);
             if (lastCard.getSuitValue() == currentCard.getSuitValue() &&
@@ -98,7 +99,7 @@ public class HandValue {
                 matchingCardsInARow = 1;
             }
         }
-        if (matchingCardsInARow == 5) {
+        if (matchingCardsInARow == handValueSize) {
             if (highValue == aceHighValue)
                 handValue.add(HandRankings.ROYAL_FLUSH.getHandRankingStrength());
             else
@@ -118,18 +119,20 @@ public class HandValue {
         // bool value represents whether or not we might be able to have a flush at the moment
         // (true when last card(s) and current card are the same suit)
         boolean potentiallyAFlush = false;
-        for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAFlush) && matchingCardsInARow < 5; i++) {
-            if (holeAndCommunityCards.get(i - 1).getSuitValue() == holeAndCommunityCards.get(i).getSuitValue()){
+        for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAFlush) && matchingCardsInARow < handValueSize; i++) {
+            Card lastCard = (holeAndCommunityCards.get(i - 1));
+            Card currentCard = holeAndCommunityCards.get(i);
+            if (lastCard.getSuitValue() == currentCard.getSuitValue()){
                 potentiallyAFlush = true;
                 matchingCardsInARow++;
             }
             else{
-                highValue = holeAndCommunityCards.get(i).getValue();
+                highValue = currentCard.getValue();
                 potentiallyAFlush = false;
                 matchingCardsInARow = 1;
             }
         }
-        if (matchingCardsInARow == 5){
+        if (matchingCardsInARow == handValueSize){
             handValue.add(HandRankings.FLUSH.getHandRankingStrength());
             handValue.add(highValue);
             wasEvaluated = true;
