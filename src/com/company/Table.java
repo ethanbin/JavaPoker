@@ -177,6 +177,8 @@ public class Table {
                     amountToCall += betValue;
                     pot += betValue;
                     break;
+                case "J":
+                	pot += betValue;
                 default:
                     amountToCall += betValue;
                     break;
