@@ -113,6 +113,14 @@ public class Player {
 
         return amount;
     }
+    
+    public int jam() {		
+    	balance = balance - balance;		//becuase the user should have none left if they do this
+    	System.out.println(getUserName() + " decided to thorw all his/her money in!");
+    	action = "J";
+    	
+    	return balance;
+    }
 
     public int getPlayerBetValue(int amountToCall) {
         System.out.println("Possible Actions:");
@@ -129,6 +137,8 @@ public class Player {
                 return call(amountToCall);
             case "R":
                 return raise();
+            case "J":
+            	return jam();
             default:
                 System.out.println("Incorrect action, try again...");
                 return getPlayerBetValue(amountToCall);
@@ -147,7 +157,7 @@ public class Player {
         }
 
         System.out.println("(R)aise");
-
+        System.out.println("(J)am");
         System.out.println("(F)old");
 
         return possibleActions;
