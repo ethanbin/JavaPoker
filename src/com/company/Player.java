@@ -115,11 +115,10 @@ public class Player {
     }
     
     public int jam() {		
-    	balance = balance - balance;		//becuase the user should have none left if they do this
     	System.out.println(getUserName() + " decided to thorw all his/her money in!");
     	action = "J";
     	
-    	return balance;
+    	return bet(balance);
     }
 
     public int getPlayerBetValue(int amountToCall) {
