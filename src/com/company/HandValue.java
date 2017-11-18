@@ -193,10 +193,16 @@ public class HandValue {
 				wasEvaluated = true;
 			}
 		}
-		
-		
 	}
 
+	private void findHighCard() {
+		Collections.sort(holeAndCommunityCards, new ValueComparator());
+		highValue = holeAndCommunityCards.get(0).getValue();
+
+		handValue.add(highValue);
+		wasEvaluated = true;
+	}
+	
 	@Override
 	public String toString() {
 		if (handValue.size() == 0)
