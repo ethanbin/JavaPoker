@@ -231,6 +231,13 @@ public class HandValue {
 			}
 		}
 
+		if (numberOfMatchingValues == pairCount) {
+			handValue.add(HandRankings.PAIR.getHandRankingStrength());
+			handValue.add(highValue);
+			wasEvaluated = true;
+		}
+	}
+
 	private void findHighCard() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
 		highValue = holeAndCommunityCards.get(0).getValue();
