@@ -60,7 +60,7 @@ public class HandValue {
 			// findStraight();
 		}
 		if (!wasEvaluated) {
-			// findThreeOfAKind();
+			findThreeOfAKind();
 		}
 		if (!wasEvaluated) {
 			// findTwoPairs();
@@ -69,7 +69,7 @@ public class HandValue {
 			findPair();
 		}
 		if (!wasEvaluated) {
-			// findHighCard();
+			findHighCard();
 		}
 
 	}
@@ -180,6 +180,35 @@ public class HandValue {
 		}
 	}
 
+	private void findThreeOfAKind() {
+		Collections.sort(holeAndCommunityCards, new ValueComparator());
+		highValue = holeAndCommunityCards.get(0).getValue();
+
+		// represents how many cards of the same suit we found in a row so far
+		int numberOfMatchingValues = 1;
+		final int ThreeOfAKindCount = 3;
+
+		// bool value represents whether or not we might be able to have a straight
+		// flush at the moment
+		// (true when last card(s) and current card are the same suit)
+		for (int i = 1; i < holeAndCommunityCards.size() && numberOfMatchingValues < ThreeOfAKindCount; i++) {
+			Card lastCard = holeAndCommunityCards.get(i - 1);
+			Card currentCard = holeAndCommunityCards.get(i);
+			if (lastCard.getValue() == currentCard.getValue()) {
+				numberOfMatchingValues++;
+			} else {
+				highValue = currentCard.getValue();
+				numberOfMatchingValues = 1;
+			}
+		}
+
+		if (numberOfMatchingValues == ThreeOfAKindCount) {
+			handValue.add(HandRankings.THREE_OF_A_KIND.getHandRankingStrength());
+			handValue.add(highValue);
+			wasEvaluated = true;
+		}
+	}
+	
 	private void findPair() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
 		highValue = holeAndCommunityCards.get(0).getValue();
