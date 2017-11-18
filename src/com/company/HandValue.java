@@ -213,16 +213,23 @@ public class HandValue {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
 		highValue = holeAndCommunityCards.get(0).getValue();
 
-		for (int i = 1; i < holeAndCommunityCards.size(); i++) {
-			Card lastCard = (holeAndCommunityCards.get(i - 1));
+		// represents how many cards of the same suit we found in a row so far
+		int numberOfMatchingValues = 1;
+		final int pairCount = 2;
+
+		// bool value represents whether or not we might be able to have a straight
+		// flush at the moment
+		// (true when last card(s) and current card are the same suit)
+		for (int i = 1; i < holeAndCommunityCards.size() && numberOfMatchingValues < pairCount; i++) {
+			Card lastCard = holeAndCommunityCards.get(i - 1);
 			Card currentCard = holeAndCommunityCards.get(i);
-			if (lastCard.getSuitValue() == currentCard.getSuitValue()) {
-				handValue.add(HandRankings.PAIR.getHandRankingStrength());
-				handValue.add(highValue);
-				wasEvaluated = true;
+			if (lastCard.getValue() == currentCard.getValue()) {
+				numberOfMatchingValues++;
+			} else {
+				highValue = currentCard.getValue();
+				numberOfMatchingValues = 1;
 			}
 		}
-	}
 
 	private void findHighCard() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
