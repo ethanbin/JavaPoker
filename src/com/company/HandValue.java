@@ -227,7 +227,8 @@ public class HandValue {
 	private void findHighCard() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
 		highValue = holeAndCommunityCards.get(0).getValue();
-
+		
+		handValue.add(HandRankings.HIGH_CARD.getHandRankingStrength());
 		handValue.add(highValue);
 		wasEvaluated = true;
 	}
