@@ -74,10 +74,10 @@ public class HandValue implements Comparable<HandValue>{
 
 	}
 
-    @Override
     // if this is greater than other, should return positive
     // if this is less than other, should return negative
     // if this is equal to other, should return 0
+    @Override
     public int compareTo(HandValue other){
         int ret = 0;
         try {

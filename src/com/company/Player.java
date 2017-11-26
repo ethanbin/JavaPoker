@@ -17,6 +17,7 @@ public class Player {
     private boolean isFolded;
     private Scanner scanner;
     private String action;
+    private HandValue handValue;
 
     Player(String username) {
         this.username = username;
@@ -142,6 +143,17 @@ public class Player {
                 System.out.println("Incorrect action, try again...");
                 return getPlayerBetValue(amountToCall);
         }
+    }
+
+    public void evaluateHand(List<Card> communityCards){
+        handValue = new HandValue(communityCards, holeCards);
+    }
+
+    // if this is greater than other, should return positive
+    // if this is less than other, should return negative
+    // if this is equal to other, should return 0
+    public int compareHandTo(Player other){
+        return this.handValue.compareTo(other.handValue);
     }
 
     private String printPossibleActions(int amountToCall) {
