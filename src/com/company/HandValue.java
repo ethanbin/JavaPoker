@@ -33,6 +33,7 @@ public class HandValue implements Comparable<HandValue>{
 		init();
 		holeAndCommunityCards.addAll(communityCards);
 		holeAndCommunityCards.addAll(holeCards);
+		this.evaluateHand();
 	}
 
 	private void init() {
@@ -41,7 +42,7 @@ public class HandValue implements Comparable<HandValue>{
 		wasEvaluated = false;
 	}
 
-	public void evaluateHand() {
+	private void evaluateHand() {
 
 		if (!wasEvaluated) {
 			findRoyalFlushOrStraightFlush();
@@ -340,7 +341,6 @@ public class HandValue implements Comparable<HandValue>{
 		communityCards.add(new Card(Card.Suit.CLUBS, 7));
 
 		HandValue hv = new HandValue(holeCards, communityCards);
-		hv.evaluateHand();
         System.out.println(hv);
 
 
@@ -355,7 +355,6 @@ public class HandValue implements Comparable<HandValue>{
         communityCards.add(new Card(Card.Suit.CLUBS, 7));
         // should be flush
         HandValue hv2 = new HandValue(holeCards, communityCards);
-        hv2.evaluateHand();
         System.out.println(hv2);
 
         if (hv2.isGreaterThan(hv))
