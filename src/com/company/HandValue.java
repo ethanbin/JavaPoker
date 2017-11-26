@@ -28,7 +28,6 @@ public class HandValue implements Comparable<HandValue>{
 	private final int aceLowValue = 1;
 	private final int aceHighValue = 14;
 	private final int handValueSize = 5;
-	private int highValue;
 
 	HandValue(List<Card> communityCards, List<Card> holeCards) {
 		init();
@@ -114,7 +113,7 @@ public class HandValue implements Comparable<HandValue>{
 	// TODO make this also work with the ace as a 2
 	private void findRoyalFlushOrStraightFlush() {
 		Collections.sort(holeAndCommunityCards, new SuitComparator());
-		highValue = holeAndCommunityCards.get(0).getValue();
+		int highValue = holeAndCommunityCards.get(0).getValue();
 
 		// represents how many cards of the same suit we found in a row so far
 		int matchingCardsInARow = 1;
@@ -149,7 +148,7 @@ public class HandValue implements Comparable<HandValue>{
 
 	private void findFourOfAKind() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
-		highValue = holeAndCommunityCards.get(0).getValue();
+		int highValue = holeAndCommunityCards.get(0).getValue();
 		int kicker = highValue;
 
 		// represents how many cards of the same suit we found in a row so far
@@ -188,7 +187,7 @@ public class HandValue implements Comparable<HandValue>{
 
 	private void findFlush() {
 		Collections.sort(holeAndCommunityCards, new SuitComparator());
-		highValue = holeAndCommunityCards.get(0).getValue();
+		int highValue = holeAndCommunityCards.get(0).getValue();
 
 		// represents how many cards of the same suit we found in a row so far
 		int matchingCardsInARow = 1;
@@ -219,7 +218,7 @@ public class HandValue implements Comparable<HandValue>{
 
 	private void findThreeOfAKind() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
-		highValue = holeAndCommunityCards.get(0).getValue();
+		int highValue = holeAndCommunityCards.get(0).getValue();
 
 		// represents how many cards of the same suit we found in a row so far
 		int numberOfMatchingValues = 1;
@@ -248,7 +247,7 @@ public class HandValue implements Comparable<HandValue>{
 	
 	private void findTwoPairs() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
-		highValue = holeAndCommunityCards.get(0).getValue();
+		int highValue = holeAndCommunityCards.get(0).getValue();
 
 		// represents how many cards of the same suit we found in a row so far
 		int pairs = 0;
@@ -276,7 +275,7 @@ public class HandValue implements Comparable<HandValue>{
 	
 	private void findPair() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
-		highValue = holeAndCommunityCards.get(0).getValue();
+		int highValue = holeAndCommunityCards.get(0).getValue();
 
 		// represents how many cards of the same suit we found in a row so far
 		int numberOfMatchingValues = 1;
@@ -305,7 +304,7 @@ public class HandValue implements Comparable<HandValue>{
 
 	private void findHighCard() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
-		highValue = holeAndCommunityCards.get(0).getValue();
+		int highValue = holeAndCommunityCards.get(0).getValue();
 		
 		handValue.add(HandRankings.HIGH_CARD.getHandRankingStrength());
 		handValue.add(highValue);
@@ -357,9 +356,15 @@ public class HandValue implements Comparable<HandValue>{
         // should be flush
         HandValue hv2 = new HandValue(holeCards, communityCards);
         hv2.evaluateHand();
+        System.out.println(hv2);
 
-        int compareHands = hv.compareTo(hv2);
         if (hv2.isGreaterThan(hv))
             System.out.println("hv2 is greater than hv");
-	}
+        else if (hv2.compareTo(hv) < 0)
+            System.out.println("hv2 is less than hv");
+        else if (hv2.equals(hv))
+            System.out.println("hv2 equals hv");
+        else
+            System.err.println("Something went wrong in comparing hv2 with hv");
+    }
 }
