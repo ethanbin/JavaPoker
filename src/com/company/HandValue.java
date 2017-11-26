@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * Created by Ethan on 11/13/2017.
  */
-public class HandValue {
+public class HandValue implements Comparable<HandValue>{
 	private enum HandRankings {
 		ROYAL_FLUSH(9), STRAIGHT_FLUSH(8), FOUR_OF_A_KIND(7), FULL_HOUSE(6), FLUSH(5), STRAIGHT(4), THREE_OF_A_KIND(
 				3), TWO_PAIRS(2), PAIR(1), HIGH_CARD(0);
@@ -73,6 +73,43 @@ public class HandValue {
 		}
 
 	}
+
+    @Override
+    // if this is greater than other, should return positive
+    // if this is less than other, should return negative
+    // if this is equal to other, should return 0
+    public int compareTo(HandValue other){
+        int ret = 0;
+        try {
+            for (int i = 0; i < this.handValue.size() && ret == 0; i++) {
+                ret = this.handValue.get(i).compareTo(other.handValue.get(i));
+            }
+        }
+        catch (IndexOutOfBoundsException e){
+            throw new IndexOutOfBoundsException("Comparing players' hands failed. Both hands have same values but different lengths.");
+        }
+
+        return ret;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HandValue)) return false;
+        HandValue handValue1 = (HandValue) o;
+        return Objects.equals(handValue, handValue1.handValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(handValue);
+    }
+
+    public boolean isGreaterThan(HandValue other){
+        if (this.compareTo(other) > 0)
+            return true;
+        return false;
+    }
 
 	// TODO make this also work with the ace as a 2
 	private void findRoyalFlushOrStraightFlush() {
@@ -305,6 +342,24 @@ public class HandValue {
 
 		HandValue hv = new HandValue(holeCards, communityCards);
 		hv.evaluateHand();
-		System.out.println(hv);
+        System.out.println(hv);
+
+
+        holeCards = new ArrayList<>();
+        communityCards = new ArrayList<>();
+        holeCards.add(new Card(Card.Suit.SPADES, 9));
+        holeCards.add(new Card(Card.Suit.SPADES, 10));
+        communityCards.add(new Card(Card.Suit.SPADES, 9));
+        communityCards.add(new Card(Card.Suit.SPADES, 12));
+        communityCards.add(new Card(Card.Suit.SPADES, 2));
+        communityCards.add(new Card(Card.Suit.CLUBS, 1));
+        communityCards.add(new Card(Card.Suit.CLUBS, 7));
+        // should be flush
+        HandValue hv2 = new HandValue(holeCards, communityCards);
+        hv2.evaluateHand();
+
+        int compareHands = hv.compareTo(hv2);
+        if (hv2.isGreaterThan(hv))
+            System.out.println("hv2 is greater than hv");
 	}
 }
