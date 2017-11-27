@@ -154,11 +154,23 @@ public class Table {
             }
         }
         System.out.println(this);
-
+        giveWinnersPot(winners);
         System.out.print("Winner = ");
         for (Player winner : winners)
             System.out.println(winner);
+    }
 
+    public void giveWinnersPot(List<Player> winners){
+        int splitPotValue = pot/winners.size();
+        int unsplitChips = pot - splitPotValue;
+
+        for (Player p : winners){
+            p.collectPot(unsplitChips);
+            pot -= unsplitChips;
+        }
+        if (unsplitChips > 0)
+            winners.get(0).collectPot(unsplitChips);
+        pot = 0;
     }
 
     //TODO: make this safe against miscalculation when current dealer is taken out of player list
