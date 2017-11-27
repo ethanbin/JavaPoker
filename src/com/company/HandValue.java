@@ -27,10 +27,18 @@ public class HandValue implements Comparable<HandValue>{
 	private boolean wasEvaluated;
 	private final int ACE_LOW_VALUE = 1;
 	private final int ACE_HIGH_VALUE = 14;
+
+	// represents how many cards are in a hand
 	private final int HAND_VALUE_CARD_COUNT = 5;
-	private final int PAIR_VALUE_LIST_SIZE = 5;
-	private final int THREE_OF_A_KIND_VALUE_LIST_SIZE= 4;
-	private final int HAND_CARD_VALUE_LIST_SIZE = 6;
+
+	// [0] = rank, [1] = 1st pair value, [2] = 2nd pair value, [3] = kicker
+	private final int TWO_PAIR_VALUE_LIST_SIZE = 4;
+
+    // [0] = rank, [1] = pair value, [2] = 1st kicker, [3] = 2nd kicker [4] = 3rd kicker
+    private final int PAIR_VALUE_LIST_SIZE = 5;
+
+    // [0] = rank, [1] = 3 of a kind value, [2] = 1st kicker, [3] = 2nd kicker
+    private final int THREE_OF_A_KIND_VALUE_LIST_SIZE= 4;
 
 
 	HandValue(List<Card> communityCards, List<Card> holeCards) {
@@ -61,7 +69,7 @@ public class HandValue implements Comparable<HandValue>{
 			findFlush();
 		}
 		if (!wasEvaluated) {
-			// findStraight();
+			findStraight();
 		}
 		if (!wasEvaluated) {
 			findThreeOfAKind();
@@ -294,7 +302,36 @@ public class HandValue implements Comparable<HandValue>{
 		}
 	}
 
-	// straight
+    // TODO make this also work with the ace as a 2
+    private void findStraight() {
+        Collections.sort(holeAndCommunityCards, new ValueComparator());
+        int highValue = holeAndCommunityCards.get(0).getValue();
+
+        // represents how many cards of the same suit we found in a row so far
+        int matchingCardsInARow = 1;
+
+        // bool value represents whether or not we might be able to have a straight at the moment
+        for (int i = 1; i < holeAndCommunityCards.size() && matchingCardsInARow < HAND_VALUE_CARD_COUNT; i++) {
+            Card lastCard = (holeAndCommunityCards.get(i - 1));
+            Card currentCard = holeAndCommunityCards.get(i);
+            if (lastCard.getValue() == currentCard.getValue() + 1){
+                matchingCardsInARow++;
+            }
+            // in case of something like 12, 11, 10, 9, 9, 8, 5, the duplicate 9(s) won't mess anything up.
+            else if (lastCard.getValue() == currentCard.getValue())
+                continue;
+            else {
+                highValue = currentCard.getValue();
+                matchingCardsInARow = 1;
+            }
+        }
+
+        if (matchingCardsInARow == HAND_VALUE_CARD_COUNT) {
+            handValue.add(HandRankings.STRAIGHT.getHandRankingStrength());
+            handValue.add(highValue);
+            wasEvaluated = true;
+        }
+    }
 
 	private void findThreeOfAKind() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
@@ -427,16 +464,16 @@ public class HandValue implements Comparable<HandValue>{
 	}
 
 	public static void main(String[] args) {
-        // test: STRAIGHT_FLUSH(with that ace correction), STRAIGHT(4),
-        // THREE_OF_A_KIND(3), TWO_PAIRS(2), PAIR(1), HIGH_CARD(0);
+        // test: STRAIGHT_FLUSH(with that ace correction),
+        // TWO_PAIRS(2), PAIR(1), HIGH_CARD(0);
 		List<Card> holeCards = new ArrayList<>();
 		holeCards.add(new Card(Card.Suit.SPADES, 9));
-		holeCards.add(new Card(Card.Suit.CLUBS, 9));
+		holeCards.add(new Card(Card.Suit.CLUBS, 8));
 
 		List<Card> communityCards = new ArrayList<>();
 		communityCards.add(new Card(Card.Suit.HEARTS, 9));
+		communityCards.add(new Card(Card.Suit.DIAMONDS, 8));
 		communityCards.add(new Card(Card.Suit.DIAMONDS, 4));
-		communityCards.add(new Card(Card.Suit.DIAMONDS, 10));
 		communityCards.add(new Card(Card.Suit.DIAMONDS, 11));
 		communityCards.add(new Card(Card.Suit.DIAMONDS, 12));
 
