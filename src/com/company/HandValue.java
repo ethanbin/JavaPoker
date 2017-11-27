@@ -162,13 +162,11 @@ public class HandValue implements Comparable<HandValue>{
 		int highValue = holeAndCommunityCards.get(0).getValue();
 		int kicker = highValue;
 
-		// represents how many cards of the same suit we found in a row so far
+		// represents how many cards of the same value we found in a row so far
 		int numberOfMatchingValues = 1;
 		final int fourOfAKindCount = 4;
 
-		// bool value represents whether or not we might be able to have a straight
-		// flush at the moment
-		// (true when last card(s) and current card are the same suit)
+		// bool value represents whether or not we might be able to have a four of a kind at the moment
 		for (int i = 1; i < holeAndCommunityCards.size() && numberOfMatchingValues < fourOfAKindCount; i++) {
 			Card lastCard = holeAndCommunityCards.get(i - 1);
 			Card currentCard = holeAndCommunityCards.get(i);
@@ -195,6 +193,63 @@ public class HandValue implements Comparable<HandValue>{
 			wasEvaluated = true;
 		}
 	}
+
+    private void findFullHouse(){
+        // a full house is essentially both a 3 of a kind and a pair.
+        // therefore, check if a 3 of a kind exists, and record what value it is
+        // then, disregarding the cards that make the 3 of a kind, check if a pair exists and record its value
+
+        // if both found, fill handValue with fullHouse value, 3 of a kind value, then pair value.
+        Collections.sort(holeAndCommunityCards, new ValueComparator());
+
+        // to keep track of what the three of a kind is
+        int threeOfAKindValue;
+
+        // to keep track of what the pair is
+        int pairValue;
+
+        findThreeOfAKind();
+        // if no 3 of a kind found, return.
+        if (handValue.size() == 0)
+            return;
+        else {
+            // because we are actually checking for full house, we didn't really evaluate the hand entirely yet,
+            // even though findThreeOfAKind set wasEvaluated to true.
+            wasEvaluated = false;
+        }
+
+        threeOfAKindValue = handValue.get(1);
+
+        // reset handValue
+        handValue = new ArrayList<>();
+
+        // keep backup of holeAndCommunityCards so we can restore it after we modify it and call findPair
+        List<Card> originalListOfCards = new ArrayList<>(holeAndCommunityCards);
+
+        // set up cards to exclude the found 3 of a kind cards so findPair won't falsely evaluate
+        holeAndCommunityCards = new ArrayList<>();
+        for (Card c : originalListOfCards){
+            if (c.getValue() != threeOfAKindValue)
+                holeAndCommunityCards.add(c);
+        }
+
+        findPair();
+
+        pairValue = handValue.get(1);
+
+        // restore holeAndCommunityCards
+        holeAndCommunityCards = new ArrayList<>(originalListOfCards);
+
+        // if no pair found, there is no full house, stop this method
+        if (handValue.size() == 0)
+            return;
+
+        // fill out handValue
+        handValue.add(HandRankings.FULL_HOUSE.getHandRankingStrength());
+        handValue.add(threeOfAKindValue);
+        handValue.add(pairValue);
+        wasEvaluated = true;
+    }
 
 	private void findFlush() {
 		Collections.sort(holeAndCommunityCards, new SuitComparator());
@@ -226,6 +281,8 @@ public class HandValue implements Comparable<HandValue>{
 			wasEvaluated = true;
 		}
 	}
+
+	// straight
 
 	private void findThreeOfAKind() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
@@ -315,10 +372,12 @@ public class HandValue implements Comparable<HandValue>{
 
 	private void findHighCard() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
-		int highValue = holeAndCommunityCards.get(0).getValue();
 
-		handValue.add(HandRankings.HIGH_CARD.getHandRankingStrength());
-		handValue.add(highValue);
+        handValue.add(HandRankings.HIGH_CARD.getHandRankingStrength());
+
+        for (int i = 0; i < HAND_VALUE_CARD_COUNT; i++)
+            handValue.add(holeAndCommunityCards.get(i).getValue());
+
 		wasEvaluated = true;
 	}
 	
