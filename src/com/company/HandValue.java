@@ -51,7 +51,7 @@ public class HandValue implements Comparable<HandValue>{
 			findFourOfAKind();
 		}
 		if (!wasEvaluated) {
-			// findFullHouse();
+			findFullHouse();
 		}
 		if (!wasEvaluated) {
 			findFlush();
@@ -235,14 +235,17 @@ public class HandValue implements Comparable<HandValue>{
 
         findPair();
 
-        pairValue = handValue.get(1);
-
-        // restore holeAndCommunityCards
-        holeAndCommunityCards = new ArrayList<>(originalListOfCards);
-
         // if no pair found, there is no full house, stop this method
         if (handValue.size() == 0)
             return;
+
+        pairValue = handValue.get(1);
+
+        // reset handValue
+        handValue = new ArrayList<>();
+
+        // restore holeAndCommunityCards
+        holeAndCommunityCards = new ArrayList<>(originalListOfCards);
 
         // fill out handValue
         handValue.add(HandRankings.FULL_HOUSE.getHandRankingStrength());
@@ -389,24 +392,37 @@ public class HandValue implements Comparable<HandValue>{
 		Collections.reverse(Arrays.asList(rankings));
 		String ret = rankings[handValue.get(0)].toString() + ": ";
 		ret += handValue.get(1).toString();
-		if (handValue.size() > 2)
-			ret += ", Kicker(s): ";
-		for (int i = 2; i < handValue.size(); i++) {
-			ret += handValue.get(i) + " ";
-		}
+
+		// will be true when either the hand has kickers or when the hand is a two pair or full house
+        if (handValue.size() > 2) {
+            // these hands have 2 values, not just 1
+            if (handValue.get(0).intValue() == HandRankings.TWO_PAIRS.getHandRankingStrength() ||
+                    handValue.get(0).intValue() == HandRankings.FULL_HOUSE.getHandRankingStrength()){
+                ret += ", " + handValue.get(2).toString();
+            }
+            else {
+                ret += ", Kicker(s): ";
+                for (int i = 2; i < handValue.size(); i++) {
+                    ret += handValue.get(i) + " ";
+                }
+            }
+        }
+
 		return ret;
 	}
 
 	public static void main(String[] args) {
+        // test: ROYAL_FLUSH(9), STRAIGHT_FLUSH(8), FULL_HOUSE(6), FLUSH(5), STRAIGHT(4),
+        // THREE_OF_A_KIND(3), TWO_PAIRS(2), PAIR(1), HIGH_CARD(0);
 		List<Card> holeCards = new ArrayList<>();
 		holeCards.add(new Card(Card.Suit.SPADES, 9));
-		holeCards.add(new Card(Card.Suit.SPADES, 10));
+		holeCards.add(new Card(Card.Suit.CLUBS, 9));
 
 		List<Card> communityCards = new ArrayList<>();
-		communityCards.add(new Card(Card.Suit.SPADES, 9));
-		communityCards.add(new Card(Card.Suit.DIAMONDS, 12));
-		communityCards.add(new Card(Card.Suit.SPADES, 2));
-		communityCards.add(new Card(Card.Suit.CLUBS, 1));
+		communityCards.add(new Card(Card.Suit.DIAMONDS, 9));
+		communityCards.add(new Card(Card.Suit.DIAMONDS, 9));
+		communityCards.add(new Card(Card.Suit.SPADES, 10));
+		communityCards.add(new Card(Card.Suit.CLUBS, 10));
 		communityCards.add(new Card(Card.Suit.CLUBS, 7));
 
 		HandValue hv = new HandValue(holeCards, communityCards);
@@ -424,7 +440,7 @@ public class HandValue implements Comparable<HandValue>{
         communityCards.add(new Card(Card.Suit.CLUBS, 7));
         // should be flush
         HandValue hv2 = new HandValue(holeCards, communityCards);
-        System.out.println(hv2);
+        //System.out.println(hv2);
 
         if (hv2.isGreaterThan(hv))
             System.out.println("hv2 is greater than hv");
