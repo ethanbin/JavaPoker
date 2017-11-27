@@ -25,9 +25,9 @@ public class HandValue implements Comparable<HandValue>{
 	private List<Integer> handValue;
 	private List<Card> holeAndCommunityCards;
 	private boolean wasEvaluated;
-	private final int aceLowValue = 1;
-	private final int aceHighValue = 14;
-	private final int handValueSize = 5;
+	private final int ACE_LOW_VALUE = 1;
+	private final int ACE_HIGH_VALUE = 14;
+	private final int HAND_VALUE_CARD_COUNT = 5;
 
 	HandValue(List<Card> communityCards, List<Card> holeCards) {
 		init();
@@ -134,7 +134,7 @@ public class HandValue implements Comparable<HandValue>{
 		// (true when last card(s) and current card are the same suit)
 		boolean potentiallyAStraightFlush = false;
 		for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAStraightFlush)
-				&& matchingCardsInARow < handValueSize; i++) {
+				&& matchingCardsInARow < HAND_VALUE_CARD_COUNT; i++) {
 			Card lastCard = (holeAndCommunityCards.get(i - 1));
 			Card currentCard = holeAndCommunityCards.get(i);
 			if (lastCard.getSuitValue() == currentCard.getSuitValue()
@@ -147,8 +147,8 @@ public class HandValue implements Comparable<HandValue>{
 				matchingCardsInARow = 1;
 			}
 		}
-		if (matchingCardsInARow == handValueSize) {
-			if (highValue == aceHighValue)
+		if (matchingCardsInARow == HAND_VALUE_CARD_COUNT) {
+			if (highValue == ACE_HIGH_VALUE)
 				handValue.add(HandRankings.ROYAL_FLUSH.getHandRankingStrength());
 			else
 				handValue.add(HandRankings.STRAIGHT_FLUSH.getHandRankingStrength());
@@ -208,7 +208,7 @@ public class HandValue implements Comparable<HandValue>{
 		// (true when last card(s) and current card are the same suit)
 		boolean potentiallyAFlush = false;
 		for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAFlush)
-				&& matchingCardsInARow < handValueSize; i++) {
+				&& matchingCardsInARow < HAND_VALUE_CARD_COUNT; i++) {
 			Card lastCard = (holeAndCommunityCards.get(i - 1));
 			Card currentCard = holeAndCommunityCards.get(i);
 			if (lastCard.getSuitValue() == currentCard.getSuitValue()) {
@@ -220,7 +220,7 @@ public class HandValue implements Comparable<HandValue>{
 				matchingCardsInARow = 1;
 			}
 		}
-		if (matchingCardsInARow == handValueSize) {
+		if (matchingCardsInARow == HAND_VALUE_CARD_COUNT) {
 			handValue.add(HandRankings.FLUSH.getHandRankingStrength());
 			handValue.add(highValue);
 			wasEvaluated = true;
@@ -316,7 +316,7 @@ public class HandValue implements Comparable<HandValue>{
 	private void findHighCard() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
 		int highValue = holeAndCommunityCards.get(0).getValue();
-		
+
 		handValue.add(HandRankings.HIGH_CARD.getHandRankingStrength());
 		handValue.add(highValue);
 		wasEvaluated = true;
