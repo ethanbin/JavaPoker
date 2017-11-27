@@ -247,7 +247,7 @@ public class HandValue implements Comparable<HandValue>{
 
         findPair();
 
-        // if no pair found, there is no full house, stop this method
+        // if no pair found, there is no full house, reset what was changed and stop this method
         if (handValue.size() == 0) {
             // reset handValue
             handValue = new ArrayList<>();
@@ -370,11 +370,14 @@ public class HandValue implements Comparable<HandValue>{
 	
 	private void findTwoPairs() {
 		Collections.sort(holeAndCommunityCards, new ValueComparator());
-		int highValue = holeAndCommunityCards.get(0).getValue();
+		/*
+		int higherPairValue = holeAndCommunityCards.get(0).getValue();
+        int lowerPairValue = holeAndCommunityCards.get(0).getValue();
 
-		// represents how many cards of the same suit we found in a row so far
+        // represents how many cards of the same suit we found in a row so far
 		int pairs = 0;
 		final int pairCount = 2;
+
 
 		// bool value represents whether or not we might be able to have a straight
 		// flush at the moment
@@ -385,15 +388,78 @@ public class HandValue implements Comparable<HandValue>{
 			if (lastCard.getValue() == currentCard.getValue()) {
 				pairs++;
 			} else {
-				highValue = currentCard.getValue();
+				higherPairValue = currentCard.getValue();
 			}
 		}
-		
+
 		if (pairs == pairCount) {
 			handValue.add(HandRankings.TWO_PAIRS.getHandRankingStrength());
-			handValue.add(highValue);
+			handValue.add(higherPairValue);
 			wasEvaluated = true;
 		}
+		*/
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // doing quick rewrite (mostly copying from findFullHouse)
+        // idea is to call findPair, removing the cards that make up the found pair, then calling again to evaluate.
+        // modified properties are restored.
+        int higherPairValue;
+        int lowerPairValue;
+        findPair();
+        // if no pair found, return.
+        if (handValue.size() == 0)
+            return;
+        else {
+            // because we are actually checking 2 pair, we didn't really evaluate the hand entirely yet,
+            // even though findPair set wasEvaluated to true.
+            wasEvaluated = false;
+        }
+
+        higherPairValue = handValue.get(1);
+
+        // reset handValue
+        handValue = new ArrayList<>();
+
+        // keep backup of holeAndCommunityCards so we can restore it after we modify it and call findPair
+        List<Card> originalListOfCards = new ArrayList<>(holeAndCommunityCards);
+
+        // set up cards to exclude the found pair so findPair won't falsely evaluate when being called again
+        holeAndCommunityCards = new ArrayList<>();
+        for (Card c : originalListOfCards){
+            if (c.getValue() != higherPairValue)
+                holeAndCommunityCards.add(c);
+        }
+
+        findPair();
+
+        // if no pair found, there is no two pair, reset what was changed and stop this method
+        if (handValue.size() == 0) {
+            // reset handValue
+            handValue = new ArrayList<>();
+            // restore holeAndCommunityCards
+            holeAndCommunityCards = new ArrayList<>(originalListOfCards);
+            return;
+        }
+
+        lowerPairValue = handValue.get(1);
+
+        // reset handValue
+        handValue = new ArrayList<>();
+
+        // restore holeAndCommunityCards
+        holeAndCommunityCards = new ArrayList<>(originalListOfCards);
+
+        // fill out handValue
+        handValue.add(HandRankings.TWO_PAIRS.getHandRankingStrength());
+        handValue.add(higherPairValue);
+        handValue.add(lowerPairValue);
+        // find kicker
+        for (Card c : holeAndCommunityCards) {
+            if (c.getValue() != higherPairValue && c.getValue() != lowerPairValue) {
+                handValue.add(c.getValue());
+                break;
+            }
+        }
+        wasEvaluated = true;
 	}
 	
 	private void findPair() {
@@ -448,12 +514,12 @@ public class HandValue implements Comparable<HandValue>{
 		// will be true when either the hand has kickers or when the hand is a two pair or full house
         if (handValue.size() > 2) {
             // these hands have 2 values, not just 1
-            if (handValue.get(0).intValue() == HandRankings.TWO_PAIRS.getHandRankingStrength() ||
-                    handValue.get(0).intValue() == HandRankings.FULL_HOUSE.getHandRankingStrength()){
-                ret += ", " + handValue.get(2).toString();
-            }
+            if (handValue.get(0) == HandRankings.TWO_PAIRS.getHandRankingStrength())
+                ret += " " + handValue.get(2).toString();
+            if (handValue.get(0) == HandRankings.FULL_HOUSE.getHandRankingStrength())
+                ret += " " + handValue.get(2).toString();
             else {
-                ret += ", Kicker(s): ";
+                ret += "; Kicker(s): ";
                 for (int i = 2; i < handValue.size(); i++) {
                     ret += handValue.get(i) + " ";
                 }
