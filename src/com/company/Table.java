@@ -123,6 +123,12 @@ public class Table {
 
     private void stageShowDown() {
         System.out.println("Stage: Showdown:");
+
+        for (Player p: players) {
+            if (!p.getIsFolded())
+                p.evaluateHand(communityCards);
+        }
+
         System.out.println(this);
     }
 
