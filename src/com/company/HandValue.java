@@ -28,6 +28,10 @@ public class HandValue implements Comparable<HandValue>{
 	private final int ACE_LOW_VALUE = 1;
 	private final int ACE_HIGH_VALUE = 14;
 	private final int HAND_VALUE_CARD_COUNT = 5;
+	private final int PAIR_VALUE_LIST_SIZE = 5;
+	private final int THREE_OF_A_KIND_VALUE_LIST_SIZE= 4;
+	private final int HAND_CARD_VALUE_LIST_SIZE = 6;
+
 
 	HandValue(List<Card> communityCards, List<Card> holeCards) {
 		init();
@@ -317,7 +321,13 @@ public class HandValue implements Comparable<HandValue>{
 		if (numberOfMatchingValues == ThreeOfAKindCount) {
 			handValue.add(HandRankings.THREE_OF_A_KIND.getHandRankingStrength());
 			handValue.add(highValue);
-			wasEvaluated = true;
+			// add kickers
+            for (int i = 0; i < holeAndCommunityCards.size() && handValue.size() < THREE_OF_A_KIND_VALUE_LIST_SIZE; i++)
+            {
+                if (holeAndCommunityCards.get(i).getValue() != highValue)
+                    handValue.add(holeAndCommunityCards.get(i).getValue());
+            }
+            wasEvaluated = true;
 		}
 	}
 	
