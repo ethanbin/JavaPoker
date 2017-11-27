@@ -191,7 +191,10 @@ public class Player {
             playerInfo.append(card.toString());
         }
 
-        playerInfo.append("\n").append(handValue).append("\n");
+        playerInfo.append("\n");
+
+        if (handValue != null)
+            playerInfo.append(handValue).append("\n");
 
         return playerInfo.toString();
     }
