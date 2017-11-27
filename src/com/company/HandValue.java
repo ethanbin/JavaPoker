@@ -74,6 +74,16 @@ public class HandValue implements Comparable<HandValue>{
 
 	}
 
+    /**
+     * Overrider for compareTo.
+     * 
+     * Returns 0 if equal, less than 0 if this < other, or greater than 0 if this > other.
+     *
+     * @param other to be compared with.
+     * @return int
+     * @throws IndexOutOfBoundsException if other was assigned incorrectly and either has fewer indexes than it should,
+     *         or was given the wrong hand type value.
+     */
     // if this is greater than other, should return positive
     // if this is less than other, should return negative
     // if this is equal to other, should return 0
