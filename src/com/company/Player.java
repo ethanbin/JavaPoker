@@ -145,6 +145,12 @@ public class Player {
         }
     }
 
+    public void collectPot(int moneyWon){
+        if (moneyWon < 0)
+            throw new IllegalArgumentException("ERROR: MONEY WON IS A NEGATIVE VALUE");
+        balance += moneyWon;
+    }
+
     public void evaluateHand(List<Card> communityCards){
         handValue = new HandValue(communityCards, holeCards);
     }
