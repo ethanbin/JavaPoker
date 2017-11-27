@@ -133,7 +133,6 @@ public class HandValue implements Comparable<HandValue>{
         return false;
     }
 
-	// TODO make this also work with the ace as a 2
 	private void findRoyalFlushOrStraightFlush() {
         // create a list that's a copy of holeAndCommunityCards.
         // in this new list, for each 14 (ace), add a card with a value of 1 of the same suit
@@ -314,7 +313,6 @@ public class HandValue implements Comparable<HandValue>{
 		}
 	}
 
-    // TODO make this also work with the ace as a 2
     private void findStraight() {
         // create a list that's a copy of holeAndCommunityCards.
         // in this new list, for each 14 (ace), add a card with a value of 1 of the same suit
