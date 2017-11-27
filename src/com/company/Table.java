@@ -124,12 +124,41 @@ public class Table {
     private void stageShowDown() {
         System.out.println("Stage: Showdown:");
 
+        // evaluate each active player's hand
         for (Player p: players) {
             if (!p.getIsFolded())
                 p.evaluateHand(communityCards);
         }
 
+        // keep track of winner(s)
+        List<Player> winners = new ArrayList<>();
+
+        // get first active player and mark him/her as winner
+        for (int i = 0; i < players.size(); i++){
+            if (!players.get(i).getIsFolded()){
+                winners.add(players.get(i));
+                break;
+            }
+        }
+
+        // find out who won
+        for (int i = 0; i < players.size(); i++){
+            if (!players.get(i).getIsFolded()) {
+                int comparedHandsValue = winners.get(0).compareHandTo(players.get(i));
+                if (comparedHandsValue < 0){
+                    winners = new ArrayList<>();
+                    winners.add(players.get(i));
+                }
+                else if (comparedHandsValue == 0)
+                    winners.add(players.get(i));
+            }
+        }
         System.out.println(this);
+
+        System.out.print("Winner = ");
+        for (Player winner : winners)
+            System.out.println(winner);
+
     }
 
     //TODO: make this safe against miscalculation when current dealer is taken out of player list
