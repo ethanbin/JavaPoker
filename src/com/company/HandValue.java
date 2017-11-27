@@ -236,8 +236,13 @@ public class HandValue implements Comparable<HandValue>{
         findPair();
 
         // if no pair found, there is no full house, stop this method
-        if (handValue.size() == 0)
+        if (handValue.size() == 0) {
+            // reset handValue
+            handValue = new ArrayList<>();
+            // restore holeAndCommunityCards
+            holeAndCommunityCards = new ArrayList<>(originalListOfCards);
             return;
+        }
 
         pairValue = handValue.get(1);
 
@@ -412,18 +417,18 @@ public class HandValue implements Comparable<HandValue>{
 	}
 
 	public static void main(String[] args) {
-        // test: ROYAL_FLUSH(9), STRAIGHT_FLUSH(8), FULL_HOUSE(6), FLUSH(5), STRAIGHT(4),
+        // test: STRAIGHT_FLUSH(with that ace correction), STRAIGHT(4),
         // THREE_OF_A_KIND(3), TWO_PAIRS(2), PAIR(1), HIGH_CARD(0);
 		List<Card> holeCards = new ArrayList<>();
 		holeCards.add(new Card(Card.Suit.SPADES, 9));
 		holeCards.add(new Card(Card.Suit.CLUBS, 9));
 
 		List<Card> communityCards = new ArrayList<>();
-		communityCards.add(new Card(Card.Suit.DIAMONDS, 9));
-		communityCards.add(new Card(Card.Suit.DIAMONDS, 9));
-		communityCards.add(new Card(Card.Suit.SPADES, 10));
-		communityCards.add(new Card(Card.Suit.CLUBS, 10));
-		communityCards.add(new Card(Card.Suit.CLUBS, 7));
+		communityCards.add(new Card(Card.Suit.HEARTS, 9));
+		communityCards.add(new Card(Card.Suit.DIAMONDS, 4));
+		communityCards.add(new Card(Card.Suit.DIAMONDS, 10));
+		communityCards.add(new Card(Card.Suit.DIAMONDS, 11));
+		communityCards.add(new Card(Card.Suit.DIAMONDS, 12));
 
 		HandValue hv = new HandValue(holeCards, communityCards);
         System.out.println(hv);
