@@ -135,8 +135,21 @@ public class HandValue implements Comparable<HandValue>{
 
 	// TODO make this also work with the ace as a 2
 	private void findRoyalFlushOrStraightFlush() {
-		Collections.sort(holeAndCommunityCards, new SuitComparator());
-		int highValue = holeAndCommunityCards.get(0).getValue();
+        // create a list that's a copy of holeAndCommunityCards.
+        // in this new list, for each 14 (ace), add a card with a value of 1 of the same suit
+        // this is to allow the code to count the ace as a low or high card.
+        // replace the code in this method accessing holeAndCommunityCards with this new list.
+        List<Card> aceSupported = new ArrayList<>(holeAndCommunityCards);
+
+        for (int i = 0; i < aceSupported.size(); i++){
+            Card currentCard = aceSupported.get(i);
+            if (currentCard.getValue() == ACE_HIGH_VALUE)
+                aceSupported.add(new Card(Card.Suit.valueOf(currentCard.getSuitName().toUpperCase()), ACE_LOW_VALUE));
+        }
+
+
+        Collections.sort(aceSupported, new SuitComparator());
+		int highValue = aceSupported.get(0).getValue();
 
 		// represents how many cards of the same suit we found in a row so far
 		int matchingCardsInARow = 1;
@@ -145,10 +158,9 @@ public class HandValue implements Comparable<HandValue>{
 		// flush at the moment
 		// (true when last card(s) and current card are the same suit)
 		boolean potentiallyAStraightFlush = false;
-		for (int i = 1; i < holeAndCommunityCards.size() && !(i >= 4 && !potentiallyAStraightFlush)
-				&& matchingCardsInARow < HAND_VALUE_CARD_COUNT; i++) {
-			Card lastCard = (holeAndCommunityCards.get(i - 1));
-			Card currentCard = holeAndCommunityCards.get(i);
+		for (int i = 1; i < aceSupported.size() && matchingCardsInARow < HAND_VALUE_CARD_COUNT; i++) {
+			Card lastCard = (aceSupported.get(i - 1));
+			Card currentCard = aceSupported.get(i);
 			if (lastCard.getSuitValue() == currentCard.getSuitValue()
 					&& lastCard.getValue() == currentCard.getValue() + 1) {
 				potentiallyAStraightFlush = true;
@@ -304,16 +316,27 @@ public class HandValue implements Comparable<HandValue>{
 
     // TODO make this also work with the ace as a 2
     private void findStraight() {
-        Collections.sort(holeAndCommunityCards, new ValueComparator());
-        int highValue = holeAndCommunityCards.get(0).getValue();
+        // create a list that's a copy of holeAndCommunityCards.
+        // in this new list, for each 14 (ace), add a card with a value of 1 of the same suit
+        // this is to allow the code to count the ace as a low or high card.
+        // replace the code in this method accessing holeAndCommunityCards with this new list.
+        List<Card> aceSupported = new ArrayList<>(holeAndCommunityCards);
+
+        for (int i = 0; i < aceSupported.size(); i++){
+            Card currentCard = aceSupported.get(i);
+            if (currentCard.getValue() == ACE_HIGH_VALUE)
+                aceSupported.add(new Card(Card.Suit.valueOf(currentCard.getSuitName().toUpperCase()), ACE_LOW_VALUE));
+        }
+        Collections.sort(aceSupported, new ValueComparator());
+        int highValue = aceSupported.get(0).getValue();
 
         // represents how many cards of the same suit we found in a row so far
         int matchingCardsInARow = 1;
 
         // bool value represents whether or not we might be able to have a straight at the moment
-        for (int i = 1; i < holeAndCommunityCards.size() && matchingCardsInARow < HAND_VALUE_CARD_COUNT; i++) {
-            Card lastCard = (holeAndCommunityCards.get(i - 1));
-            Card currentCard = holeAndCommunityCards.get(i);
+        for (int i = 1; i < aceSupported.size() && matchingCardsInARow < HAND_VALUE_CARD_COUNT; i++) {
+            Card lastCard = (aceSupported.get(i - 1));
+            Card currentCard = aceSupported.get(i);
             if (lastCard.getValue() == currentCard.getValue() + 1){
                 matchingCardsInARow++;
             }
@@ -540,17 +563,16 @@ public class HandValue implements Comparable<HandValue>{
 
 	public static void main(String[] args) {
         // test: STRAIGHT_FLUSH(with that ace correction),
-        // PAIR(1), HIGH_CARD(0);
 		List<Card> holeCards = new ArrayList<>();
 		holeCards.add(new Card(Card.Suit.SPADES, 9));
 		holeCards.add(new Card(Card.Suit.CLUBS, 8));
 
 		List<Card> communityCards = new ArrayList<>();
-		communityCards.add(new Card(Card.Suit.HEARTS, 8));
-		communityCards.add(new Card(Card.Suit.DIAMONDS, 9));
+		communityCards.add(new Card(Card.Suit.DIAMONDS, 2));
+		communityCards.add(new Card(Card.Suit.DIAMONDS, 3));
 		communityCards.add(new Card(Card.Suit.DIAMONDS, 4));
-		communityCards.add(new Card(Card.Suit.DIAMONDS, 11));
-		communityCards.add(new Card(Card.Suit.DIAMONDS, 12));
+		communityCards.add(new Card(Card.Suit.CLUBS, 13));
+		communityCards.add(new Card(Card.Suit.DIAMONDS, 14));
 
 		HandValue hv = new HandValue(holeCards, communityCards);
         System.out.println(hv);
