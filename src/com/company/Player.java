@@ -191,7 +191,7 @@ public class Player {
             playerInfo.append(card.toString());
         }
 
-        playerInfo.append("\n");
+        playerInfo.append("\n").append(handValue).append("\n");
 
         return playerInfo.toString();
     }
