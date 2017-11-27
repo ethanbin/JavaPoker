@@ -518,11 +518,15 @@ public class HandValue implements Comparable<HandValue>{
 
 		// will be true when either the hand has kickers or when the hand is a two pair or full house
         if (handValue.size() > 2) {
-            // these hands have 2 values, not just 1
-            if (handValue.get(0) == HandRankings.TWO_PAIRS.getHandRankingStrength())
-                ret += " " + handValue.get(2).toString();
             if (handValue.get(0) == HandRankings.FULL_HOUSE.getHandRankingStrength())
                 ret += " " + handValue.get(2).toString();
+            else if (handValue.get(0) == HandRankings.TWO_PAIRS.getHandRankingStrength()) {
+                ret += " " + handValue.get(2).toString();
+                ret += "; Kicker(s): ";
+                for (int i = 3; i < handValue.size(); i++) {
+                    ret += handValue.get(i) + " ";
+                }
+            }
             else {
                 ret += "; Kicker(s): ";
                 for (int i = 2; i < handValue.size(); i++) {
@@ -542,8 +546,8 @@ public class HandValue implements Comparable<HandValue>{
 		holeCards.add(new Card(Card.Suit.CLUBS, 8));
 
 		List<Card> communityCards = new ArrayList<>();
-		communityCards.add(new Card(Card.Suit.HEARTS, 5));
-		communityCards.add(new Card(Card.Suit.DIAMONDS, 8));
+		communityCards.add(new Card(Card.Suit.HEARTS, 8));
+		communityCards.add(new Card(Card.Suit.DIAMONDS, 9));
 		communityCards.add(new Card(Card.Suit.DIAMONDS, 4));
 		communityCards.add(new Card(Card.Suit.DIAMONDS, 11));
 		communityCards.add(new Card(Card.Suit.DIAMONDS, 12));
