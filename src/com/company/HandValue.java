@@ -487,6 +487,11 @@ public class HandValue implements Comparable<HandValue>{
 		if (numberOfMatchingValues == pairCount) {
 			handValue.add(HandRankings.PAIR.getHandRankingStrength());
 			handValue.add(highValue);
+            for (int i = 0; i < holeAndCommunityCards.size() && handValue.size() < PAIR_VALUE_LIST_SIZE ; i++) {
+                int currentValue = holeAndCommunityCards.get(i).getValue();
+                if (currentValue != highValue)
+                    handValue.add(currentValue);
+            }
 			wasEvaluated = true;
 		}
 	}
@@ -531,13 +536,13 @@ public class HandValue implements Comparable<HandValue>{
 
 	public static void main(String[] args) {
         // test: STRAIGHT_FLUSH(with that ace correction),
-        // TWO_PAIRS(2), PAIR(1), HIGH_CARD(0);
+        // PAIR(1), HIGH_CARD(0);
 		List<Card> holeCards = new ArrayList<>();
 		holeCards.add(new Card(Card.Suit.SPADES, 9));
 		holeCards.add(new Card(Card.Suit.CLUBS, 8));
 
 		List<Card> communityCards = new ArrayList<>();
-		communityCards.add(new Card(Card.Suit.HEARTS, 9));
+		communityCards.add(new Card(Card.Suit.HEARTS, 5));
 		communityCards.add(new Card(Card.Suit.DIAMONDS, 8));
 		communityCards.add(new Card(Card.Suit.DIAMONDS, 4));
 		communityCards.add(new Card(Card.Suit.DIAMONDS, 11));
